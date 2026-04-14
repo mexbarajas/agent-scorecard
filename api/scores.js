@@ -1,63 +1,81 @@
 // api/scores.js
-// Uses Vercel KV REST API directly via fetch — no npm packages needed.
-// Requires KV_REST_API_URL and KV_REST_API_TOKEN env vars (auto-set when
-// you connect a KV database in the Vercel dashboard).
+// Uses Vercel Blob storage via its REST API.
+// BLOB_READ_WRITE_TOKEN is auto-injected when you connect a Blob store in Vercel dashboard.
+// No npm packages needed — pure fetch.
 
-const KEY = 'cooper_scores';
+const BLOB_FILENAME = 'cooper-scores.json';
 
-function getKV() {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  if (!url || !token) return null;
-  return { url, token };
+function getBlobConfig() {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return null;
+  return { token };
 }
 
-async function kvGet(kv) {
-  const res = await fetch(`${kv.url}/get/${KEY}`, {
-    headers: { Authorization: `Bearer ${kv.token}` }
+async function blobGet(config) {
+  // List blobs to find our file, then fetch it
+  const listRes = await fetch(
+    `https://blob.vercel-storage.com?prefix=${encodeURIComponent(BLOB_FILENAME)}&limit=1`,
+    { headers: { Authorization: `Bearer ${config.token}` } }
+  );
+  if (!listRes.ok) throw new Error(`Blob LIST ${listRes.status}: ${await listRes.text()}`);
+  const list = await listRes.json();
+  
+  if (!list.blobs || list.blobs.length === 0) return null;
+  
+  // Fetch the actual file content from the blob URL
+  const blobUrl = list.blobs[0].url;
+  const res = await fetch(blobUrl, {
+    headers: { Authorization: `Bearer ${config.token}` },
   });
-  if (!res.ok) throw new Error(`KV GET failed: ${res.status}`);
-  const json = await res.json();
-  // Upstash returns { result: "stringified-json" } or { result: null }
-  if (!json.result) return {};
-  return typeof json.result === 'string' ? JSON.parse(json.result) : json.result;
+  if (!res.ok) throw new Error(`Blob GET ${res.status}`);
+  return res.json();
 }
 
-async function kvSet(kv, data) {
-  const res = await fetch(`${kv.url}/set/${KEY}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${kv.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ value: JSON.stringify(data) }),
-  });
-  if (!res.ok) throw new Error(`KV SET failed: ${res.status}`);
+async function blobPut(config, data) {
+  const res = await fetch(
+    `https://blob.vercel-storage.com/${BLOB_FILENAME}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${config.token}`,
+        'Content-Type': 'application/json',
+        'x-api-version': '7',
+        'x-add-random-suffix': '0',
+        'x-cache-control-max-age': '0',
+      },
+      body: JSON.stringify(data),
+    }
+  );
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Blob PUT ${res.status}: ${text}`);
+  }
+  return res.json();
 }
 
 export default async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
-  const kv = getKV();
-  if (!kv) {
+  const config = getBlobConfig();
+  if (!config) {
     return res.status(500).json({
-      error: 'KV not configured. Go to Vercel dashboard → Storage → Create KV Database → connect to this project.'
+      error: 'BLOB_READ_WRITE_TOKEN not found. Connect a Blob store to this project in Vercel dashboard.',
     });
   }
 
   if (req.method === 'GET') {
     try {
-      const scores = await kvGet(kv);
-      return res.status(200).json({ scores });
+      const data = await blobGet(config);
+      return res.status(200).json({ scores: data?.scores || {}, goals: data?.goals || {} });
     } catch (e) {
-      return res.status(500).json({ scores: {}, error: e.message });
+      return res.status(500).json({ scores: {}, goals: {}, error: e.message });
     }
   }
 
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-      await kvSet(kv, body.scores || {});
+      await blobPut(config, { scores: body.scores || {}, goals: body.goals || {} });
       return res.status(200).json({ ok: true });
     } catch (e) {
       return res.status(500).json({ error: e.message });
