@@ -114,7 +114,14 @@
   .checked .opt-dot { display: block; }
   .opt-num  { font-size: 15px; font-weight: 900; line-height: 1; }
   .opt-text { font-size: 12px; line-height: 1.45; margin-top: 3px; }
-  .action-row { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; flex-wrap: wrap; gap: 14px; background: #ffffff; border-radius: 10px; padding: 18px 24px; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
+  .focus-section{margin-top:12px;padding-top:10px;border-top:1.5px solid #f0f1f3;}
+.focus-btn{width:100%;padding:10px 14px;border-radius:7px;border:2px solid;font-size:12px;font-weight:800;cursor:pointer;transition:all .18s;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:6px;}
+.focus-btn:hover{filter:brightness(.92);transform:translateY(-1px);}
+.focus-btn.focus-active{box-shadow:0 3px 10px rgba(0,0,0,.18);}
+.ap-chips{display:flex;flex-wrap:wrap;gap:5px;}
+.ap-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:800;border:1.5px solid;border-radius:5px;padding:3px 9px;}
+.goal-tag{font-size:9px;font-weight:700;background:#e8e9ec;color:#888;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;vertical-align:middle;margin-left:4px;}
+.action-row { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; flex-wrap: wrap; gap: 14px; background: #ffffff; border-radius: 10px; padding: 18px 24px; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
   .action-hint { font-size: 13px; color: #999; }
   /* KPI */
   .kpi-header-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 14px; }
@@ -265,51 +272,54 @@ const AGENT_COLORS=['#C8102E','#e85d2f','#2563eb','#0891b2','#7c3aed','#a21caf',
 const SEGMENTS=[
   {key:'stock',label:'Stock',color:'#2563eb',criteria:[
     {name:'Customer Relations',s:['No direct relationships','Less than 3 direct relationships','4-7 Direct relationships','7+ Direct relationships']},
-    {name:'Lead Management',s:['Ability to track territory Stock position within distributor customers','Engagement with Cooper Lighting Sales managers around CRM tool','Process to track and review territory stock / Market Pro position with relevant staff','Documented targets for stock sales conversion/growth in CRM tool']},
-    {name:'Marketing Presence',s:['Maintains a presence with our marketing collateral','Proactively deploys applicable training courses','Marketing fund utilization — guidance to stock distributor partners','Buying Group proficiency — Field Marketing Summit participation']},
-    {name:'Quoting & Pricing',s:['Maintains a basic understanding of market stock price levels','Adoption of stock enablement methodology (Walkaway Pricing)','Deploys differentiated approach with different distributors','Consistent Top 10 performance in Promos']},
-    {name:'Tool & Resource Util.',s:['Utilization of PLM to display stock pricing in Prism','Possesses basic understanding of EDI / API / E-commerce ideology','Actively promotes EDI usage with territory distributors','Process to track and drive adoption of stock growth programs']},
-    {name:'Organizational Align.',s:['Stock sales leader defined within organization','Dedicated / defined outside sales resource to support stock sales','Reviews and adjusts distributor online product presence','Inside sales resource assigned to actively support stock sales']}
+    {name:'Lead Management',s:['Ability to track territory Stock position within distributor customers','Engagement with Cooper Lighting Sales managers around CRM tool','Process to track and review territory stock / Market Pro position with relevant staff','Documented targets for stock sales conversion/grovvth in CRM tool [] Standard process to track and review territory Stock position inclusive of joint corrective cycles and routine cadence with CLS']},
+    {name:'Marketing Presence and market insights',s:['Maintains a presence with our marketing collateral','Proactively deploys applicable training courses (agent with distributors, virtually / in person)','Marketing fund utilization-provides guidance to stock distributor partners','Buying Group proficiency- Field Marketing Summit participation, etc.']},
+    {name:'Quoting, Pricing and Negotiation',s:['Maintains a basic understanding of market stock price levels','Adoption of stock enablement methodology (i.e., Walkaway Pricing)','Deploys differentiated approach with different distributors in the market','Consistent Top 10 performance in Promos.']},
+    {name:'Tool and Resource Utilization',s:['Utilization of PLM to display stock pricing in Prism','Possesses basic understanding of EDI/ API/ E-commerce ideology','Actively promotes EDI usage with territory distributors','Process to track and drive adoption of stock growth programs and promotions / Cadence with leveraging all NPI product/MRAM kits with planned sales calls, L&L\'s']},
+    {name:'Organizational Alignment',s:['Stock sales leader defined within organization','Dedicated / defined outside sales resource to support stock sales','Reviews and adjusts distributor online product presence to promote stock items','Inside sales resource assigned to actively support stock sales']}
   ]},
   {key:'spec',label:'Spec',color:'#7c3aed',criteria:[
     {name:'Customer Relations',s:['No direct relationships','Less than 3 direct relationships','4-7 Direct relationships','7+ Direct relationships']},
-    {name:'Lead Management',s:['Reactive tracking of projects (primarily crossing existing specs)','Engagement with Cooper Lighting Sales managers around CRM tool','Process to track and review territory Stock / Market Pro position with relevant staff','Documented targets for stock sales conversion/growth in CRM tool']},
-    {name:'Marketing Presence',s:['No differentiated events planned to target specific segments','Proactively deploys applicable training courses','Marketing fund utilization — guidance to stock distributor partners','Buying Group proficiency — Field Marketing Summit participation']},
-    {name:'Quoting & Pricing',s:['Process orders','Adoption of stock enablement methodology (Walkaway Pricing)','Deploys differentiated approach with different distributors','Consistent Top 10 performance in Promos']},
-    {name:'Tool & Resource Util.',s:['LEX — Not aware or using','Possesses basic understanding of EDI / API / E-commerce ideology','Actively promotes EDI usage with territory distributors','Process to track and drive adoption of stock growth programs']},
-    {name:'Education & Training',s:['Unable to cross competitive products','Dedicated / defined outside sales resource to support stock sales','Reviews and adjusts distributor online product presence','Inside sales resource assigned to actively support stock sales']},
-    {name:'Organizational Align.',s:['Mainly rely on crossing specs, do not utilize layout support','Know of CLS application team but seldom use — can use online calculator tools','Predominately use CLS application team for complete layouts','Agency has internal staff capable of full performance layouts']}
+    {name:'Lead Management',s:['Reactive tracking of projects (primarily crossing existing specs). No use of construct connect. No use of lead generation services','Proactive project tracking capabilities, not easily delivered to CLS for CRM Integration. No use of Construct Connect or of lead generation services.','Project tracking system in place. Use of some sort of lead generation services (Construct Connect)','Specific goals for sales activity for all forms, regularly tracks customer project types, has plan on what products, brands, to show each firm']},
+    {name:'Marketing Presence and market insights',s:['No differentiated events planned to target specific segment (architects / electrical engineers / lighting designers / distributors / electircal contractors)','Periodic events at offsite facilities (including source/APG trips) that facilitate CLS product engagement for specific segment (architects / electrical engineers / lighting designers / distributors / electrical contractors)','Non-standard events specifically targeting this segment. In their home/office (i.e., mixology class that features lighting). CEUs targeting specific segment (architects / electrical engineers / lighting designers / distributors / electircal contractors)','Non-standard events hosted at the reps office that specifically targets specific segment (architects / electrical engineers / lighting designers / distributors / electircal contractors)']},
+    {name:'Quoting, Pricing and Negotiation',s:['Process orders','Consistently expediting orders due to poor early planning. Communication between groups within the organization is not effective','Reasonable communication throughout process between groups within the organization. Agency still reactive vs. proactive to issues','Have PM team that plans proactively and is integral with project from specification, quote, order, delivery, post sales and project completion. Client perception of excellence consistently met. Leverages CLS good, better ,best product differentiation']},
+    {name:'Tool and Resource Utilization',s:['LEX - Not aware or using','LEX - They are aware, but do not use for any customer iterations. Attends all NPI launch sessions with full team participation, followed by target sales calls','LEX - Some links are posted to their site; their sales teams are all conform table and proficient. Proactively utilizes monthly ASOW reports to  drive focus and additional specifications in under-specified categories','LEX - All NPIs are caroseled, offering trainings to customers on project management features, managing mailing list to specifiers, and kept current with agent alerts and NPI.']},
+    {name:'Education, Training and Benchmarking',s:['Unable to cross competitive products','Cross products, but not always effectively to maximize competitive advantages, i.e., crossing lumen for lumen vs. understanding optics and performance','Creates full package cross but does not always understand clients needs in regard to design intent and budget','Full utilization of layouts to package crosses that meet performance demands and budget']},
+    {name:'Organizational Alignment',s:['Mainly rely on crossing specs and do not utilize layout support','Know of, but seldomly use our CLS application team. Are not proficient In gathering sufficient info to generate full layout. Can use on-line calculator tools','Predominately use CLS application team for complete layouts. Know how to collect all relevant info for our application team. Can internally generate basic light- level calculations','Agency has internal staff capable of doing full performance layouts and lighting design. Can understand and sell against competitor layouts']},
+    {name:'Share of Wallet',s:['Not proeficient in 4 brands','Not proeficient in 3 brands','Not proeficient in 2 brands','Actively promoting and selling all APG brands']}
   ]},
   {key:'industrial',label:'Industrial',color:'#d97706',criteria:[
     {name:'Customer Relations',s:['No direct relationships','Less than 3 direct relationships','4-7 Direct relationships','7+ Direct relationships']},
-    {name:'Lead Management',s:['Reactive to direct contact','Targeted customer list identified (warehouse, logistics, manufacturing)','National Accounts active relationships','Enterprise / National accounts active relationships']},
-    {name:'Marketing Presence',s:['Basic understanding of the market','Industry associations and events','Dedicated / focused sales team','Internal applications / design team']},
-    {name:'Quoting & Pricing',s:['Utilization of applications / quotes team','Local reference projects','Dedicated quotes team','Connected systems proposed, closed']},
-    {name:'Tool & Resource Util.',s:['Basic understanding of the CLS tools','Utility rebate program execution processes','Utilization of all CLS tools and programs','Lead generation tools, pipeline management (e.g. Construct Connect)']},
-    {name:'Education & Training',s:['Product and Application training','Competitive product cross and design training','Inverter, emergency competency','Controls (WLX Lite, etc.)']},
-    {name:'Organizational Align.',s:['Identified industrial sales leader, can tell the story','In house CLS optimized application and design','In house MWS quote layout resources','Internal audit resources for retrofit']}
+    {name:'Lead Management',s:['Reactive to direct contact','National Accounts active relationships','Targeted customer list, warehouse, logistics, manufacturing, (materials, chips, auto, aerospace, defense) Identified market size, share, target. Leverages Nemalux with door opener sales calls','Enterprise, National accounts active relationships. Works collaboratively with Industrial/Nemalux team to identify existing and new customers']},
+    {name:'Marketing Presence and market insights',s:['Basic understanding of the market','Industry associations (etc.,.) and events.','Dedicated quotes team. Understands market level pricing required.','Internal applications/design team.']},
+    {name:'Quoting, Pricing and Negotiation',s:['Utilization of applications / quotes team','Local reference projects','Dedicated quotes team','Connected systems proposed, closed']},
+    {name:'Tool and Resource Utilization',s:['Basic understanding of the CLS tools','Utility rebate program execution processes','Utilization of all CLS tools and programs','Lead generation tools, pipeline management process, e.g., Construct Connect']},
+    {name:'Education, Training and Benchmarking',s:['Product and Application training','Competitive product cross and design training','Inverter, emergency competency','Controls (WLX Lite, etc.)']},
+    {name:'Organizational Alignment',s:['Identified industrial sales leader, can tell the story, speak the language','In house CLS optimized application and design','In house MWS quote layout resources','Internal audit resources for retrofit']}
   ]},
   {key:'connected',label:'Connected',color:'#059669',criteria:[
-    {name:'Customer Relations',s:['No direct relationships','Less than 3 direct relationships','4-7 Direct relationships','7+ Direct relationships']},
-    {name:'Lead Management',s:['Developed connected lighting pipeline','ConstructConnect usage','Bi-weekly CLS project review','Pre-wire meetings capability']},
-    {name:'Marketing Presence',s:['Industry associations (IES, etc.)','Active promotion on Social Media','Demo cases for controls','Advanced — not specified']},
-    {name:'Quoting & Pricing',s:['Utilization of applications / quotes team','Quotes under $50K','Quotes over $50K','Full WLX quoting capabilities']},
-    {name:'Tool & Resource Util.',s:['Control specialist training / Lighting spec team controls trained','WLX certification','Electronic tools (CAD / Bluebeam)','SFDC / CRM integration']},
-    {name:'Organizational Align.',s:['No dedicated controls team','Dedicated inside support / Basic troubleshooting, Controls PM, WLX Lite','Benchmarking / mentoring — high performing agent (as participant)','Benchmarking / mentoring — high performing agent (as mentor)']},
-    {name:'Other',s:['Not specified','Not specified','3rd Party / agent start-up certified','Dedicated outside controls sales / Controls PM / Direct pricing set-up']}
+    {name:'Customer Relations',s:['No direct relationships','Less than 3 direct relationships','4-7 Direct relationships','7+ Direct relationships. Regarded as SME and trusted advisor']},
+    {name:'Lead Management',s:['Developed connected lighting pipeline','Constructconnect usage','Bi-Weekly CLS project review','Pre Wire meetings capability']},
+    {name:'Marketing Presence and market insights',s:['Industry associations (IES, etc)','Active promotion on Social Media','Demo cases for controls','Commissioning demo cases on site']},
+    {name:'Quoting, Pricing and Negotiation',s:['Utilization of applications / quotes team','Quotes under 50K','Quotes over 50K','Full WLX quoting capabilities. Tracks attachment rate on projects. Strives for 10% of total sales in Controls']},
+    {name:'Tool and Resource Utilization',s:['Control specialist training / Lighting spec team controls trained','Control spec usage. SPEC 360 proficiency.','Electronic tools (CAD/Bluebeam)','SFDC/CRM integration']},
+    {name:'Education, Training and Benchmarking',s:['No dedicated controls team','In depth knowledge of top competitor offerings and CLS differentiation','WLX certification. Demonstrates proficiency in selling all WLX platforms. Demonstrates ILC proficiency','Benchmarking / mentoring session with high performing agent (agent as mentor). Active in Controls UAG']},
+    {name:'Organizational Alignment',s:['','Dedicated inside support / Basic troubleshooting, Controls PM capability, WLX Lite capability','3ddd Party/agent start-up certified','Dedicated outside controls sales / Dedicated controls PM, Dedicated Tech']}
   ]}
 ];
-const MAX={stock:24,spec:28,industrial:28,connected:28};
+
+const MAX={stock:24,spec:32,industrial:28,connected:28};
 const TOTAL_CRITERIA=SEGMENTS.reduce((a,s)=>a+s.criteria.length,0);
-let cur=0,scores={},goals={},saveTimer=null;
+let cur=0,scores={},focus={},saveTimer=null;
 
 function initScores(){scores={};AGENTS.forEach(a=>{scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));});}
 initScores();
 
-function setGoal(agent,seg,val){
-  const k=agent+'_'+seg+'_goal';
-  goals[k]=goals[k]===val?0:val;
+function toggleFocus(agent,seg){
+  if(!focus[agent]) focus[agent]={};
+  focus[agent][seg]=!focus[agent][seg];
   renderSummary();
+  renderKPI();
   scheduleSave();
 }
 
@@ -333,7 +343,7 @@ async function loadFromServer(){
         }));
       });
     }
-    if(d.goals) Object.assign(goals,d.goals);
+    if(d.focus) Object.assign(focus,d.focus);
     setSyncStatus('synced','✓ Connected — scores shared across all users');
     return true;
   }catch(e){
@@ -347,7 +357,7 @@ async function saveToServer(){
     const r=await fetch('/api/scores',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scores,goals})
+      body:JSON.stringify({scores,focus})
     });
     if(!r.ok) throw new Error('HTTP '+r.status);
     const d=await r.json();
@@ -400,16 +410,19 @@ function renderSummary(){
   const a=AGENTS[cur],at=agentTotal(a);
   let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div></div>`;
   h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value">${at.total}<span> / ${at.max}</span></div><div class="sc-sub">${Math.round(at.pct*100)}% maturity</div></div>`;
-  [['c-blue','stock'],['c-purple','spec'],['c-amber','industrial'],['c-green','connected']].forEach(([cls,sk])=>{
+  const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
+  [["c-blue","stock"],["c-purple","spec"],["c-amber","industrial"],["c-green","connected"]].forEach(([cls,sk])=>{
     const s=SEGMENTS.find(x=>x.key===sk),ss=segScore(a,sk);
-    const gk=a+'_'+sk+'_goal';const cg=goals[gk]||0;const mx=MAX[sk];
-    const steps=[Math.round(mx*0.25),Math.round(mx*0.5),Math.round(mx*0.75),mx];
-    const btns=steps.map(v=>`<button class="goal-btn${cg===v?' goal-btn-active':''}" onclick="setGoal('${a}','${sk}',${v})">${v}</button>`).join('');
-    h+=`<div class="summary-card ${cls}"><div class="sc-label">${s.label} <span class="goal-tag">Score</span></div><div class="sc-value">${ss.total}<span> / ${ss.max}</span></div><div class="sc-sub">${Math.round(ss.pct*100)}%</div><div class="goal-row"><span class="goal-label">&#127919;</span>${btns}</div></div>`;
+    const col=SEG_COLORS[sk];
+    const isFocus=!!(focus[a]&&focus[a][sk]);
+    const btnStyle=isFocus
+      ?`background:${col};border-color:${col};color:#fff`
+      :`background:#fff;border-color:${col};color:${col}`;
+    const btnTxt=isFocus?"🎯 Priority Area Set":"Set as Priority Area";
+    h+=`<div class="summary-card ${cls}"><div class="sc-label">${s.label}</div><div class="sc-value">${ss.total}<span> / ${ss.max}</span></div><div class="sc-sub">${Math.round(ss.pct*100)}%</div><div class="focus-section"><button class="focus-btn ${isFocus?"focus-active":""}" style="${btnStyle}" onclick="toggleFocus('${a}','${sk}')">${btnTxt}</button></div></div>`;
   });
-  document.getElementById('agent-summary').innerHTML=h;
+  document.getElementById("agent-summary").innerHTML=h;
 }
-
 function renderScorecard(){
   const a=AGENTS[cur];let h='';
   SEGMENTS.forEach(seg=>{
@@ -441,10 +454,10 @@ function renderKPI(){
   const gmx=MAX.stock+MAX.spec+MAX.industrial+MAX.connected;
   let tots={stock:0,spec:0,industrial:0,connected:0,grand:0};
   const SCOLS=[
-    {sk:'stock',  color:'#2563eb',label:'Stock'},
-    {sk:'spec',   color:'#7c3aed',label:'Spec'},
-    {sk:'industrial',color:'#d97706',label:'Ind'},
-    {sk:'connected', color:'#059669',label:'Con'}
+    {sk:"stock",   color:"#2563eb",label:"Stock"},
+    {sk:"spec",    color:"#7c3aed",label:"Spec"},
+    {sk:"industrial",color:"#d97706",label:"Industrial"},
+    {sk:"connected", color:"#059669",label:"Connected"}
   ];
   let h=`<thead><tr>
     <th>Agent</th>
@@ -453,23 +466,20 @@ function renderKPI(){
     <th style="border-left:4px solid #d97706;">Industrial /${MAX.industrial}</th>
     <th style="border-left:4px solid #059669;">Connected /${MAX.connected}</th>
     <th>Total</th><th>Maturity</th>
-    <th style="border-left:3px solid #C8102E;background:#111827;color:#fff;">&#127919; Final State Goal</th>
+    <th style="border-left:3px solid #C8102E;background:#111827;color:#fff;">&#9733; Priority Segments</th>
   </tr></thead><tbody>`;
   AGENTS.forEach((a,ai)=>{
-    const st=segScore(a,'stock'),sp=segScore(a,'spec'),ind=segScore(a,'industrial'),con=segScore(a,'connected');
+    const st=segScore(a,"stock"),sp=segScore(a,"spec"),ind=segScore(a,"industrial"),con=segScore(a,"connected");
     const grand=st.total+sp.total+ind.total+con.total,pct=Math.round((grand/gmx)*100);
     const bc=barColor(grand/gmx),ac=AGENT_COLORS[ai];
     tots.stock+=st.total;tots.spec+=sp.total;tots.industrial+=ind.total;tots.connected+=con.total;tots.grand+=grand;
-    const ck=isComplete(a)?' <span style="color:#16a34a;font-size:13px;">&#10003;</span>':'';
-    // Goal cell
-    const chips=SCOLS.map(({sk,color,label})=>{
-      const g=goals[a+'_'+sk+'_goal']||0;
-      return g>0?`<span class="goal-chip" style="border-color:${color};color:${color};">${label[0]} ${g}/${MAX[sk]}</span>`:'';
-    }).filter(Boolean).join('');
-    const totalGoal=SCOLS.reduce((acc,{sk})=>acc+(goals[a+'_'+sk+'_goal']||0),0);
-    const goalCell=chips
-      ?`<div class="goal-chips">${chips}</div><div class="goal-total"><strong>${totalGoal}</strong>/${gmx} &nbsp;<span style="color:#aaa;">${Math.round(totalGoal/gmx*100)}%</span></div>`
-      :`<span style="color:#555;font-size:12px;">— no goal set —</span>`;
+    const ck=isComplete(a)?" <span style=\"color:#16a34a;font-size:13px;\">&#10003;</span>":"";
+    const chips=SCOLS.filter(({sk})=>focus[a]&&focus[a][sk]).map(({color,label})=>
+      `<span class="ap-chip" style="border-color:${color};color:${color};background:${color}18;"><span class="chip-dot" style="background:${color};display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;vertical-align:middle;"></span>${label}</span>`
+    ).join("");
+    const apCell=chips
+      ?`<div class="ap-chips">${chips}</div>`
+      :`<span style="color:#888;font-size:12px;">— none set —</span>`;
     h+=`<tr>
       <td><span class="agent-dot" style="background:${ac}"></span>${a}${ck}</td>
       <td><span class="seg-score">${st.total}</span><span class="seg-pct">${Math.round(st.pct*100)}%</span></td>
@@ -478,7 +488,7 @@ function renderKPI(){
       <td><span class="seg-score">${con.total}</span><span class="seg-pct">${Math.round(con.pct*100)}%</span></td>
       <td><strong>${grand}</strong></td>
       <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${ac};"></div></div><span class="pct-label" style="color:${bc};">${pct}%</span></div></td>
-      <td style="border-left:3px solid #1f2937;">${goalCell}</td>
+      <td style="border-left:3px solid #1f2937;">${apCell}</td>
     </tr>`;
   });
   const avgPct=Math.round((tots.grand/(AGENTS.length*gmx))*100);
@@ -487,11 +497,10 @@ function renderKPI(){
     <td>${tots.stock}</td><td>${tots.spec}</td><td>${tots.industrial}</td><td>${tots.connected}</td>
     <td>${tots.grand}</td>
     <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${avgPct}%;background:${barColor(avgPct/100)};"></div></div><span class="pct-label" style="color:${barColor(avgPct/100)};">${avgPct}%</span></div></td>
-    <td style="border-left:3px solid #1f2937;color:#666;font-size:12px;">Set goals in Score Agents view</td>
+    <td style="border-left:3px solid #1f2937;color:#888;font-size:12px;">Set priorities in Score view</td>
   </tr></tbody>`;
-  document.getElementById('kpi-table').innerHTML=h;
+  document.getElementById("kpi-table").innerHTML=h;
 }
-
 function confirmReset(){if(confirm('Reset ALL scores for all agents? This cannot be undone.')){initScores();renderTabs();renderSummary();renderScorecard();updateProgress();saveToServer();toast('\u2713 All scores reset.');}}
 
 function exportExcel(){
