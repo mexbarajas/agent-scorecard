@@ -52,9 +52,9 @@
   .tabs-bar { background: #ffffff; border-radius: 10px; padding: 20px 24px; margin-bottom: 22px; box-shadow: 0 1px 6px rgba(0,0,0,.09); }
   .tabs-bar-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
   .tabs-label { font-size: 12px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
-  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; max-width: 100%; }
   /* LIQUID FILL TAB */
-  .tab { position: relative; padding: 0; border-radius: 8px; border: 2px solid #d0d3da; font-size: 13px; font-weight: 700; cursor: pointer; background: #ffffff; color: #555; transition: border-color .2s, color .2s, box-shadow .2s; overflow: hidden; min-width: 82px; text-align: center; }
+  .tab { position: relative; padding: 0; border-radius: 8px; border: 2px solid #d0d3da; font-size: 12px; font-weight: 700; cursor: pointer; background: #ffffff; color: #555; transition: border-color .2s, color .2s, box-shadow .2s; overflow: hidden; min-width: 0; width: calc(16.66% - 6px); text-align: center; }
   .tab:hover { border-color: #1a1a2e; box-shadow: 0 2px 8px rgba(0,0,0,.12); }
   .tab-fill { position: absolute; top: 0; left: 0; bottom: 0; width: 0%; transition: width .45s ease; z-index: 0; border-radius: 5px; }
   .tab-inner { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 9px 14px; gap: 3px; pointer-events: none; }
@@ -655,6 +655,10 @@ async function loadFromServer(){
     }
     if(d.focus) Object.assign(focus,d.focus);
     if(d.snapshots&&Array.isArray(d.snapshots)) snapshots=d.snapshots;
+    // Guard: ensure every agent has a scores entry (handles missing/partial data)
+    AGENTS.forEach(a=>{
+      if(!scores[a]){ scores[a]={}; SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{ scores[a][s.key+'_'+i]=0; })); }
+    });
     setSyncStatus('synced','✓ Connected — scores shared across all users');
     renderSnapUI();renderKPI();
     return true;
@@ -733,14 +737,23 @@ function confirmRename(i){
   if(bg) bg.remove();
   if(!newName || newName===AGENTS[i]) return;
   const oldName=AGENTS[i];
-  if(scores[oldName]){scores[newName]=scores[oldName];delete scores[oldName];}
-  if(focus[oldName]){focus[newName]=focus[oldName];delete focus[oldName];}
+  // migrate scores — copy then delete old key
+  if(scores[oldName]){ scores[newName]=scores[oldName]; delete scores[oldName]; }
+  else { scores[newName]={}; SEGMENTS.forEach(s=>s.criteria.forEach((_,ci)=>{ scores[newName][s.key+'_'+ci]=0; })); }
+  // migrate focus
+  if(focus[oldName]){ focus[newName]=focus[oldName]; delete focus[oldName]; }
+  // migrate snapshots
   snapshots.forEach(snap=>{
-    if(snap.data&&snap.data[oldName]){snap.data[newName]=snap.data[oldName];delete snap.data[oldName];}
+    if(snap.data&&snap.data[oldName]){ snap.data[newName]=snap.data[oldName]; delete snap.data[oldName]; }
+  });
+  // ensure ALL other agents have scores initialised (guard against undefined)
+  AGENTS.forEach((a,ai)=>{
+    const nm=ai===i?newName:a;
+    if(!scores[nm]){ scores[nm]={}; SEGMENTS.forEach(s=>s.criteria.forEach((_,ci)=>{ scores[nm][s.key+'_'+ci]=0; })); }
   });
   AGENTS[i]=newName;
   cur=i;
-  renderTabs();renderSummary();renderScorecard();renderKPI();
+  renderTabs(); renderSummary(); renderScorecard(); renderKPI();
   scheduleSave();
   toast('✓ Agent renamed to '+newName);
 }
@@ -766,7 +779,9 @@ function renderTabs(){
 }
 
 function renderSummary(){
-  const a=AGENTS[cur],at=agentTotal(a);
+  const a=AGENTS[cur];
+  if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}
+  const at=agentTotal(a);
   let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div><div style="margin-top:10px;"><button onclick="openRenameModal(${cur})" style="background:#C8102E;border:none;color:#fff;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;width:100%;">&#9998; Rename Agent</button></div></div>`;
   h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value" style="font-size:22px;">${maturityLabel(at.pct)}</div><div class="sc-sub">Level ${maturityLevel(at.pct)}</div></div>`;
   const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
@@ -784,6 +799,7 @@ function renderSummary(){
 }
 function renderScorecard(){
   const a=AGENTS[cur];let h='';
+  if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}
   SEGMENTS.forEach(seg=>{
     const ss=segScore(a,seg.key);
     h+=`<div class="segment-section"><div class="segment-eyebrow" style="color:${seg.color};">${seg.label} Segment<div class="seg-line"></div></div>`;
