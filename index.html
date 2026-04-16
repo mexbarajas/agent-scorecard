@@ -738,6 +738,11 @@ function confirmRename(i){
   const bg=document.getElementById('rename-modal-bg');
   if(bg) bg.remove();
   if(!newName || newName===AGENTS[i]) return;
+  // Block duplicate names — would corrupt data
+  if(AGENTS.some((a,idx)=>a===newName&&idx!==i)){
+    toast('⚠ That name is already used by another agent. Choose a different name.');
+    return;
+  }
   const oldName=AGENTS[i];
   // migrate scores — copy then delete old key
   if(scores[oldName]){ scores[newName]=scores[oldName]; delete scores[oldName]; }
