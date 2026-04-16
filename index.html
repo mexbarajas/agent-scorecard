@@ -140,8 +140,6 @@
 .res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
 .res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
 .res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
-.tab-edit-btn{background:rgba(255,255,255,.15);border:none;color:rgba(255,255,255,.8);border-radius:4px;padding:1px 5px;font-size:12px;cursor:pointer;margin-left:5px;transition:all .15s;vertical-align:middle;line-height:1;}
-.tab-edit-btn:hover{background:#C8102E;color:#fff;}
 .rename-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;}
 .rename-modal{background:#fff;border-radius:12px;padding:28px 28px 22px;min-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25);}
 .rename-modal-title{font-size:13px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;}
@@ -756,14 +754,6 @@ function renderTabs(){
     ns.textContent=a+(done&&!active?' ✓':'');
     const ps=document.createElement('span');ps.className='tab-pct';ps.textContent=Math.round(pct*100)+'%';
     inn.appendChild(ns);
-    if(active){
-      const eb=document.createElement('button');
-      eb.className='tab-edit-btn';
-      eb.innerHTML='&#9998;';
-      eb.title='Rename agent';
-      eb.onclick=(e)=>{e.stopPropagation();openRenameModal(i);};
-      inn.appendChild(eb);
-    }
     inn.appendChild(ps);btn.appendChild(fd);btn.appendChild(inn);
     if(!active){if(done){btn.style.borderColor=color;btn.style.color='#fff';}else if(fillW>0){btn.style.borderColor=color;btn.style.color='#1a1a2e';}}
     else{btn.style.background='#1a1a2e';btn.style.borderColor='#1a1a2e';btn.style.color='#fff';}
@@ -773,7 +763,7 @@ function renderTabs(){
 
 function renderSummary(){
   const a=AGENTS[cur],at=agentTotal(a);
-  let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div></div>`;
+  let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div><div style="margin-top:10px;"><button onclick="openRenameModal(${cur})" style="background:#C8102E;border:none;color:#fff;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;width:100%;">&#9998; Rename Agent</button></div></div>`;
   h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value" style="font-size:22px;">${maturityLabel(at.pct)}</div><div class="sc-sub">Level ${maturityLevel(at.pct)}</div></div>`;
   const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
   [["c-blue","stock"],["c-purple","spec"],["c-amber","industrial"],["c-green","connected"]].forEach(([cls,sk])=>{
