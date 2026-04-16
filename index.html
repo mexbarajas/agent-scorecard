@@ -809,7 +809,7 @@ function renderScorecard(){
   document.getElementById('scorecard-content').innerHTML=h;
 }
 
-function setScore(agent,key,val){scores[agent][key]=scores[agent][key]===val?0:val;renderSummary();renderScorecard();
+function setScore(agent,key,val){scores[agent][key]=scores[agent][key]===val?0:val;renderSummary();renderScorecard();renderTabs();updateProgress();scheduleSave();}
 function setResTab(sk){
   const sks=['stock','spec','industrial','connected'];
   const cols={stock:'#2563eb',spec:'#7c3aed',industrial:'#d97706',connected:'#059669'};
@@ -820,7 +820,6 @@ function setResTab(sk){
     if(panel) panel.className='res-panel'+(s===sk?' res-act':'');
   });
 }
-renderTabs();updateProgress();scheduleSave();}
 function goto(i){cur=i;renderTabs();renderSummary();renderScorecard();updateProgress();renderSnapUI();document.getElementById('prev-btn').disabled=i===0;document.getElementById('next-btn').disabled=i===AGENTS.length-1;document.getElementById('prog').textContent=(i+1)+' / '+AGENTS.length;window.scrollTo({top:0,behavior:'smooth'});}
 function nav(d){const n=cur+d;if(n>=0&&n<AGENTS.length)goto(n);}
 function saveAgent(){const a=AGENTS[cur],done=isComplete(a);if(!done){const sc=agentCriteriaCounted(a);toast('\u26a0 '+a+' \u2014 '+sc+'/'+TOTAL_CRITERIA+' criteria scored.');}else{toast('\u2713 '+a+' saved and marked complete!');}renderTabs();updateProgress();window.scrollTo({top:0,behavior:'smooth'});if(cur<AGENTS.length-1)nav(1);else setView('kpi');}
