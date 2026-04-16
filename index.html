@@ -140,12 +140,16 @@
 .res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
 .res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
 .res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
-.tab-rename-wrap{position:relative;display:inline-flex;align-items:center;}
-.tab-rename-input{font-size:13px;font-weight:800;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,.6);color:#fff;padding:2px 4px;width:80px;outline:none;text-align:center;cursor:text;}
-.tab-rename-input:focus{border-bottom-color:#C8102E;background:rgba(255,255,255,.08);}
-.rename-confirm{background:#C8102E;border:none;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:800;cursor:pointer;margin-left:4px;display:none;}
-.tab-rename-input:focus ~ .rename-confirm{display:inline-block;}
-.edit-hint{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:2px;}
+.rename-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;}
+.rename-modal{background:#fff;border-radius:12px;padding:28px 28px 22px;min-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25);}
+.rename-modal-title{font-size:13px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;}
+.rename-modal-input{width:100%;font-size:18px;font-weight:800;border:2px solid #e8e9ec;border-radius:8px;padding:10px 14px;outline:none;color:#1a1a2e;transition:border-color .15s;}
+.rename-modal-input:focus{border-color:#C8102E;}
+.rename-modal-hint{font-size:11px;color:#aaa;margin-top:6px;margin-bottom:18px;}
+.rename-modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+.rename-modal-cancel{background:transparent;border:1.5px solid #e8e9ec;color:#888;border-radius:6px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;}
+.rename-modal-save{background:#C8102E;border:none;color:#fff;border-radius:6px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer;}
+.rename-modal-save:hover{background:#a50d26;}
 .snap-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:13px 20px;margin-bottom:18px;box-shadow:0 1px 6px rgba(0,0,0,.08);flex-wrap:wrap;border:1.5px solid #e8e9ec;}
 .snap-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
 .snap-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
@@ -694,22 +698,47 @@ function updateProgress(){
   document.getElementById('progress-count').textContent=done+' / '+AGENTS.length+' agents fully scored';
 }
 
-function renameAgent(i, newName){
-  newName = newName.trim();
-  if(!newName || newName === AGENTS[i]) return;
-  const oldName = AGENTS[i];
-  // migrate scores and focus to new name
-  if(scores[oldName]){ scores[newName]=scores[oldName]; delete scores[oldName]; }
-  if(focus[oldName]){ focus[newName]=focus[oldName]; delete focus[oldName]; }
-  // migrate snapshots
-  snapshots.forEach(snap=>{
-    if(snap.data&&snap.data[oldName]){ snap.data[newName]=snap.data[oldName]; delete snap.data[oldName]; }
+function openRenameModal(i){
+  const existing=document.getElementById('rename-modal-bg');
+  if(existing) existing.remove();
+  const bg=document.createElement('div');
+  bg.id='rename-modal-bg';bg.className='rename-modal-bg';
+  bg.innerHTML=`<div class="rename-modal">
+    <div class="rename-modal-title">Rename Agent</div>
+    <input class="rename-modal-input" id="rename-modal-input" value="${AGENTS[i].replace(/"/g,'&quot;')}" maxlength="40" />
+    <div class="rename-modal-hint">Press Enter or click Save to confirm.</div>
+    <div class="rename-modal-btns">
+      <button class="rename-modal-cancel" onclick="document.getElementById('rename-modal-bg').remove()">Cancel</button>
+      <button class="rename-modal-save" onclick="confirmRename(${i})">Save</button>
+    </div>
+  </div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg) bg.remove(); });
+  document.body.appendChild(bg);
+  const inp=document.getElementById('rename-modal-input');
+  inp.focus();inp.select();
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();confirmRename(i);}
+    if(e.key==='Escape') bg.remove();
   });
-  AGENTS[i] = newName;
-  cur = i;
-  renderTabs(); renderSummary(); renderScorecard(); renderKPI();
+}
+function confirmRename(i){
+  const inp=document.getElementById('rename-modal-input');
+  if(!inp) return;
+  const newName=inp.value.trim();
+  const bg=document.getElementById('rename-modal-bg');
+  if(bg) bg.remove();
+  if(!newName || newName===AGENTS[i]) return;
+  const oldName=AGENTS[i];
+  if(scores[oldName]){scores[newName]=scores[oldName];delete scores[oldName];}
+  if(focus[oldName]){focus[newName]=focus[oldName];delete focus[oldName];}
+  snapshots.forEach(snap=>{
+    if(snap.data&&snap.data[oldName]){snap.data[newName]=snap.data[oldName];delete snap.data[oldName];}
+  });
+  AGENTS[i]=newName;
+  cur=i;
+  renderTabs();renderSummary();renderScorecard();renderKPI();
   scheduleSave();
-  toast('✓ Agent renamed to ' + newName);
+  toast('✓ Agent renamed to '+newName);
 }
 
 function renderTabs(){
@@ -722,19 +751,13 @@ function renderTabs(){
     if(!active){fd.style.width=fillW+'%';fd.style.background=color;fd.style.opacity=done?'1':'0.22';}
     const inn=document.createElement('div');inn.className='tab-inner';
     const ns=document.createElement('span');ns.className='tab-name';
+    ns.textContent=a+(done&&!active?' ✓':'');
     if(active){
-      ns.innerHTML=`<span class="tab-rename-wrap">
-        <input class="tab-rename-input" id="rename-input-${i}" value="${a.replace(/'/g,"&#39;")}"
-          title="Click to rename this agent"
-          onkeydown="if(event.key==='Enter'){event.preventDefault();renameAgent(${i},this.value);this.blur();}"
-          onblur="renameAgent(${i},this.value)"
-          onclick="event.stopPropagation()"
-        />
-      </span><span class="edit-hint">click to rename</span>`;
-    } else {
-      ns.textContent = a + (done && !active ? ' ✓' : '');
+      ns.title='Double-click to rename';
+      ns.style.cursor='pointer';
+      ns.ondblclick=(e)=>{e.stopPropagation();openRenameModal(i);};
     }
-    const ps=document.createElement('span');ps.className='tab-pct';ps.textContent=Math.round(pct*100)+'%';
+        const ps=document.createElement('span');ps.className='tab-pct';ps.textContent=Math.round(pct*100)+'%';
     inn.appendChild(ns);inn.appendChild(ps);btn.appendChild(fd);btn.appendChild(inn);
     if(!active){if(done){btn.style.borderColor=color;btn.style.color='#fff';}else if(fillW>0){btn.style.borderColor=color;btn.style.color='#1a1a2e';}}
     else{btn.style.background='#1a1a2e';btn.style.borderColor='#1a1a2e';btn.style.color='#fff';}
