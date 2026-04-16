@@ -121,6 +121,47 @@
 .ap-chips{display:flex;flex-wrap:wrap;gap:5px;}
 .ap-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:800;border:1.5px solid;border-radius:5px;padding:3px 9px;}
 .goal-tag{font-size:9px;font-weight:700;background:#e8e9ec;color:#888;padding:1px 5px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;vertical-align:middle;margin-left:4px;}
+.res-tab-bar{display:flex;gap:0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08);margin-bottom:22px;border:1.5px solid #e8e9ec;}
+.res-tab{flex:1;padding:14px 10px;font-size:13px;font-weight:800;cursor:pointer;transition:all .18s;border:none;background:transparent;color:#888;border-bottom:3px solid transparent;letter-spacing:.02em;}
+.res-tab:hover{color:#1a1a2e;background:#f9fafb;}
+.res-tab.res-act{color:#fff;border-bottom-color:transparent;}
+.res-panel{display:none;}.res-panel.res-act{display:block;}
+.res-section{background:#fff;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.08);padding:28px 30px;margin-bottom:18px;}
+.res-section-title{font-size:13px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.12em;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.res-section-title::after{content:'';flex:1;height:1.5px;background:#f0f1f3;border-radius:1px;}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.res-card{border:2px dashed #e0e2e8;border-radius:10px;padding:24px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#fafbfc;transition:all .15s;cursor:default;}
+.res-card:hover{border-color:#aaa;background:#f4f5f7;}
+.res-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;}
+.res-card-title{font-size:13px;font-weight:800;color:#1a1a2e;}
+.res-card-sub{font-size:11px;color:#aaa;font-weight:600;}
+.res-coming{display:inline-block;font-size:10px;font-weight:800;background:#f0f1f3;color:#aaa;padding:2px 8px;border-radius:10px;letter-spacing:.06em;text-transform:uppercase;}
+.res-hero{text-align:center;padding:40px 20px;}
+.res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
+.res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
+.res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
+.snap-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:13px 20px;margin-bottom:18px;box-shadow:0 1px 6px rgba(0,0,0,.08);flex-wrap:wrap;border:1.5px solid #e8e9ec;}
+.snap-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
+.snap-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
+.snap-chip{display:inline-flex;align-items:center;gap:5px;background:#f4f5f7;border:1.5px solid #e8e9ec;border-radius:20px;padding:4px 11px;font-size:11px;font-weight:700;color:#555;cursor:pointer;transition:all .15s;}
+.snap-chip:hover{border-color:#1a1a2e;color:#1a1a2e;}
+.snap-chip.selected{background:#1a1a2e;color:#fff;border-color:#1a1a2e;}
+.snap-chip.baseline-chip{border-color:#C8102E;color:#C8102E;background:#fff0f0;}
+.snap-chip.baseline-chip.selected{background:#C8102E;color:#fff;}
+.snap-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.snap-btn{background:#C8102E;color:#fff;border:none;border-radius:6px;padding:7px 16px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.snap-btn:hover{background:#a50d26;}
+.snap-clear{background:transparent;border:1.5px solid #e8e9ec;color:#999;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;}
+.snap-clear:hover{border-color:#ef4444;color:#ef4444;}
+.baseline-sel{border:1.5px solid #e8e9ec;border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;color:#1a1a2e;background:#fff;cursor:pointer;}
+.delta-wrap{display:flex;flex-direction:column;gap:4px;}
+.delta-segs{display:flex;gap:8px;flex-wrap:wrap;}
+.delta-seg{display:flex;flex-direction:column;align-items:center;gap:1px;}
+.delta-seg-label{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;}
+.delta-seg-val{font-size:12px;font-weight:800;}
+.delta-total{font-size:13px;font-weight:800;display:flex;align-items:center;gap:4px;border-top:1.5px solid #f0f1f3;padding-top:4px;margin-top:2px;}
+.d-up{color:#16a34a;} .d-dn{color:#ef4444;} .d-eq{color:#aaa;}
+.no-snap{color:#aaa;font-size:12px;font-style:italic;}
 .action-row { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; flex-wrap: wrap; gap: 14px; background: #ffffff; border-radius: 10px; padding: 18px 24px; box-shadow: 0 1px 6px rgba(0,0,0,.08); }
   .action-hint { font-size: 13px; color: #999; }
   /* KPI */
@@ -139,7 +180,11 @@
   .kpi-table .total-row td { background: #f4f5f7; font-weight: 800; border-top: 2.5px solid #1a1a2e; }
   .seg-score { font-weight: 800; font-size: 15px; }
   .seg-pct { font-size: 12px; color: #aaa; font-weight: 600; margin-left: 5px; }
-  .bar-wrap { display: flex; align-items: center; gap: 10px; }
+  .maturity-pill{display:inline-flex;align-items:center;gap:6px;border:2px solid;border-radius:20px;padding:4px 10px;white-space:nowrap;}
+.mp-num{font-size:16px;font-weight:900;line-height:1;}
+.mp-lbl{font-size:11px;font-weight:800;letter-spacing:.04em;}
+.mp-pct{font-size:10px;font-weight:600;opacity:.65;margin-left:2px;}
+.bar-wrap { display: flex; align-items: center; gap: 10px; }
   .bar-track { flex: 1; height: 8px; background: #e8e9ec; border-radius: 4px; overflow: hidden; min-width: 100px; }
   .bar-fill { height: 100%; border-radius: 4px; transition: width .4s; }
   .pct-label { font-size: 13px; font-weight: 800; min-width: 40px; }
@@ -185,8 +230,9 @@
     </div>
   </div>
   <div class="header-nav">
-    <button class="btn btn-ghost" id="btn-score" onclick="setView('score')">&#9654; Score Agents</button>
-    <button class="btn btn-ghost" id="btn-kpi"   onclick="setView('kpi')">&#9783; KPI Dashboard</button>
+    <button class="btn btn-ghost" id="btn-score"     onclick="setView('score')">&#9654; Score Agents</button>
+    <button class="btn btn-ghost" id="btn-kpi"       onclick="setView('kpi')">&#9783; KPI Dashboard</button>
+    <button class="btn btn-ghost" id="btn-resources" onclick="setView('resources')">&#128218; Resources</button>
   </div>
 </header>
 
@@ -203,6 +249,11 @@
 
 <main class="page-wrap">
   <div id="score-view">
+    <div class="snap-bar">
+      <span class="snap-label">Snapshots</span>
+      <div class="snap-chips" id="snap-chips-score"><span class="no-snap">No snapshots yet</span></div>
+      <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
+    </div>
     <div class="progress-banner">
       <span class="progress-label">Overall Progress</span>
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
@@ -227,14 +278,198 @@
     </div>
   </div>
   <div id="kpi-view" style="display:none;">
+    <div class="snap-bar">
+      <span class="snap-label">Compare baseline:</span>
+      <select class="baseline-sel" id="baseline-sel"><option value="">No baseline</option></select>
+      <div class="snap-chips" id="snap-chips-kpi"><span class="no-snap">No snapshots yet</span></div>
+      <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
+      <button class="snap-clear" onclick="if(confirm('Delete all snapshots?')){snapshots=[];renderSnapUI();renderKPI();scheduleSave();}">Clear all</button>
+    </div>
     <div class="kpi-header-row">
       <div>
         <div class="kpi-title">KPI Dashboard</div>
-        <div class="kpi-subtitle">Live scores — shared across all users in real time</div>
+        <div class="kpi-subtitle">Live scores — compare against saved snapshots</div>
       </div>
       <button class="btn btn-red" style="font-size:15px;padding:12px 28px;" onclick="exportExcel()">&#8595;&nbsp; Export to Excel</button>
     </div>
     <div class="kpi-card"><table class="kpi-table" id="kpi-table"></table></div>
+  </div>
+
+  <div id="resources-view" style="display:none;">
+    <div class="res-tab-bar" id="res-tab-bar"><button class="res-tab res-act" style="background:#2563eb;" onclick="setResTab('stock')" id="res-tab-stock">Stock</button><button class="res-tab" style="" onclick="setResTab('spec')" id="res-tab-spec">Spec</button><button class="res-tab" style="" onclick="setResTab('industrial')" id="res-tab-industrial">Industrial</button><button class="res-tab" style="" onclick="setResTab('connected')" id="res-tab-connected">Connected</button></div>
+    
+  <div class="res-panel res-act" id="res-panel-stock">
+    <div class="res-section">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:18px;font-weight:800;color:#2563eb;margin-bottom:4px;">Stock Segment</div>
+        <div style="font-size:13px;color:#888;">Stock sales performance, distributor engagement, and CRM tools</div>
+      </div>
+      <div class="res-section-title">Training Content</div>
+      <div class="res-grid"><div class="res-card">
+          <div class="res-icon" style="background:#e8f0fe;">&#127916;</div>
+          <div class="res-card-title">Videos</div>
+          <div class="res-card-sub">Training & product demos</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#f3e8ff;">&#128196;</div>
+          <div class="res-card-title">Documents</div>
+          <div class="res-card-sub">Guides, SOPs & references</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fef3e8;">&#127897;</div>
+          <div class="res-card-title">Audio</div>
+          <div class="res-card-sub">Podcasts & walkthroughs</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#e8f5e9;">&#128190;</div>
+          <div class="res-card-title">PDFs</div>
+          <div class="res-card-sub">Spec sheets & presentations</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fce8f0;">&#128279;</div>
+          <div class="res-card-title">Links</div>
+          <div class="res-card-sub">External tools & resources</div>
+          <span class="res-coming">Coming soon</span>
+        </div></div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">Action Plans</div>
+      <div class="res-upload-zone">
+        <div style="font-size:28px;margin-bottom:10px;">&#128197;</div>
+        <div style="font-weight:800;color:#1a1a2e;margin-bottom:6px;">Stock Action Plans</div>
+        <div style="font-size:12px;color:#bbb;">Action plan templates and playbooks will appear here.</div>
+      </div>
+    </div>
+  </div>
+  <div class="res-panel" id="res-panel-spec">
+    <div class="res-section">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:18px;font-weight:800;color:#7c3aed;margin-bottom:4px;">Spec Segment</div>
+        <div style="font-size:13px;color:#888;">Specification sales, project tracking, and APG brand proficiency</div>
+      </div>
+      <div class="res-section-title">Training Content</div>
+      <div class="res-grid"><div class="res-card">
+          <div class="res-icon" style="background:#e8f0fe;">&#127916;</div>
+          <div class="res-card-title">Videos</div>
+          <div class="res-card-sub">Training & product demos</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#f3e8ff;">&#128196;</div>
+          <div class="res-card-title">Documents</div>
+          <div class="res-card-sub">Guides, SOPs & references</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fef3e8;">&#127897;</div>
+          <div class="res-card-title">Audio</div>
+          <div class="res-card-sub">Podcasts & walkthroughs</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#e8f5e9;">&#128190;</div>
+          <div class="res-card-title">PDFs</div>
+          <div class="res-card-sub">Spec sheets & presentations</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fce8f0;">&#128279;</div>
+          <div class="res-card-title">Links</div>
+          <div class="res-card-sub">External tools & resources</div>
+          <span class="res-coming">Coming soon</span>
+        </div></div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">Action Plans</div>
+      <div class="res-upload-zone">
+        <div style="font-size:28px;margin-bottom:10px;">&#128197;</div>
+        <div style="font-weight:800;color:#1a1a2e;margin-bottom:6px;">Spec Action Plans</div>
+        <div style="font-size:12px;color:#bbb;">Action plan templates and playbooks will appear here.</div>
+      </div>
+    </div>
+  </div>
+  <div class="res-panel" id="res-panel-industrial">
+    <div class="res-section">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:18px;font-weight:800;color:#d97706;margin-bottom:4px;">Industrial Segment</div>
+        <div style="font-size:13px;color:#888;">Industrial market development, Nemalux integration, and national accounts</div>
+      </div>
+      <div class="res-section-title">Training Content</div>
+      <div class="res-grid"><div class="res-card">
+          <div class="res-icon" style="background:#e8f0fe;">&#127916;</div>
+          <div class="res-card-title">Videos</div>
+          <div class="res-card-sub">Training & product demos</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#f3e8ff;">&#128196;</div>
+          <div class="res-card-title">Documents</div>
+          <div class="res-card-sub">Guides, SOPs & references</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fef3e8;">&#127897;</div>
+          <div class="res-card-title">Audio</div>
+          <div class="res-card-sub">Podcasts & walkthroughs</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#e8f5e9;">&#128190;</div>
+          <div class="res-card-title">PDFs</div>
+          <div class="res-card-sub">Spec sheets & presentations</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fce8f0;">&#128279;</div>
+          <div class="res-card-title">Links</div>
+          <div class="res-card-sub">External tools & resources</div>
+          <span class="res-coming">Coming soon</span>
+        </div></div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">Action Plans</div>
+      <div class="res-upload-zone">
+        <div style="font-size:28px;margin-bottom:10px;">&#128197;</div>
+        <div style="font-weight:800;color:#1a1a2e;margin-bottom:6px;">Industrial Action Plans</div>
+        <div style="font-size:12px;color:#bbb;">Action plan templates and playbooks will appear here.</div>
+      </div>
+    </div>
+  </div>
+  <div class="res-panel" id="res-panel-connected">
+    <div class="res-section">
+      <div style="margin-bottom:18px;">
+        <div style="font-size:18px;font-weight:800;color:#059669;margin-bottom:4px;">Connected Segment</div>
+        <div style="font-size:13px;color:#888;">Controls, WLX platforms, and connected lighting solutions</div>
+      </div>
+      <div class="res-section-title">Training Content</div>
+      <div class="res-grid"><div class="res-card">
+          <div class="res-icon" style="background:#e8f0fe;">&#127916;</div>
+          <div class="res-card-title">Videos</div>
+          <div class="res-card-sub">Training & product demos</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#f3e8ff;">&#128196;</div>
+          <div class="res-card-title">Documents</div>
+          <div class="res-card-sub">Guides, SOPs & references</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fef3e8;">&#127897;</div>
+          <div class="res-card-title">Audio</div>
+          <div class="res-card-sub">Podcasts & walkthroughs</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#e8f5e9;">&#128190;</div>
+          <div class="res-card-title">PDFs</div>
+          <div class="res-card-sub">Spec sheets & presentations</div>
+          <span class="res-coming">Coming soon</span>
+        </div><div class="res-card">
+          <div class="res-icon" style="background:#fce8f0;">&#128279;</div>
+          <div class="res-card-title">Links</div>
+          <div class="res-card-sub">External tools & resources</div>
+          <span class="res-coming">Coming soon</span>
+        </div></div>
+    </div>
+    <div class="res-section">
+      <div class="res-section-title">Action Plans</div>
+      <div class="res-upload-zone">
+        <div style="font-size:28px;margin-bottom:10px;">&#128197;</div>
+        <div style="font-weight:800;color:#1a1a2e;margin-bottom:6px;">Connected Action Plans</div>
+        <div style="font-size:12px;color:#bbb;">Action plan templates and playbooks will appear here.</div>
+      </div>
+    </div>
+  </div>
   </div>
 </main>
 
@@ -310,10 +545,68 @@ const SEGMENTS=[
 
 const MAX={stock:24,spec:32,industrial:28,connected:28};
 const TOTAL_CRITERIA=SEGMENTS.reduce((a,s)=>a+s.criteria.length,0);
-let cur=0,scores={},focus={},saveTimer=null;
+let cur=0,scores={},focus={},snapshots=[],saveTimer=null;
 
 function initScores(){scores={};AGENTS.forEach(a=>{scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));});}
 initScores();
+
+function getMonthLabel(){
+  const now=new Date();
+  return now.toLocaleString('en-US',{month:'long'})+' Review';
+}
+function saveSnapshot(){
+  const label=getMonthLabel();
+  const existing=snapshots.findIndex(s=>s.label===label);
+  const snap={id:Date.now(),label,ts:new Date().toISOString(),data:JSON.parse(JSON.stringify(scores))};
+  if(existing!==-1) snapshots[existing]=snap;
+  else snapshots.unshift(snap);
+  if(snapshots.length>12) snapshots=snapshots.slice(0,12);
+  renderSnapUI();
+  scheduleSave();
+  toast('✓ Snapshot saved: '+label);
+}
+function deleteSnapshot(id){
+  snapshots=snapshots.filter(s=>s.id!==id);
+  const sel=document.getElementById('baseline-sel');
+  if(sel&&sel.value==id) sel.value='';
+  renderSnapUI();
+  renderKPI();
+  scheduleSave();
+}
+function renderSnapUI(){
+  // Score view chips
+  const sc=document.getElementById('snap-chips-score');
+  if(sc){
+    if(snapshots.length===0){sc.innerHTML='<span class="no-snap">No snapshots saved yet</span>';}
+    else{sc.innerHTML=snapshots.map(s=>`<span class="snap-chip baseline-chip" title="${new Date(s.ts).toLocaleString()}">${s.label}<span style="margin-left:4px;opacity:.5;cursor:pointer;font-size:10px;" onclick="event.stopPropagation();deleteSnapshot(${s.id})">x</span></span>`).join('');}
+  }
+  // KPI baseline selector
+  const sel=document.getElementById('baseline-sel');
+  if(sel){
+    const cur=sel.value;
+    sel.innerHTML='<option value="">No baseline</option>'+snapshots.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+    if(cur&&snapshots.find(s=>s.id==cur)) sel.value=cur;
+    sel.onchange=()=>renderKPI();
+  }
+  // KPI chips
+  const kc=document.getElementById('snap-chips-kpi');
+  if(kc){
+    if(snapshots.length===0){kc.innerHTML='<span class="no-snap">No snapshots yet — save one to compare</span>';}
+    else{kc.innerHTML=snapshots.map(s=>`<span class="snap-chip baseline-chip" title="${new Date(s.ts).toLocaleString()}">${s.label}</span>`).join('');}
+  }
+}
+function getBaselineScore(snap,agent,segKey,critIdx){
+  if(!snap||!snap.data||!snap.data[agent]) return null;
+  return snap.data[agent][segKey+'_'+critIdx]||0;
+}
+function getBaselineSegTotal(snap,agent,sk){
+  if(!snap) return null;
+  const seg=SEGMENTS.find(s=>s.key===sk);
+  if(!seg||!snap.data||!snap.data[agent]) return null;
+  let t=0;
+  seg.criteria.forEach((_,i)=>{t+=snap.data[agent][sk+'_'+i]||0;});
+  return t;
+}
 
 function toggleFocus(agent,seg){
   if(!focus[agent]) focus[agent]={};
@@ -344,7 +637,9 @@ async function loadFromServer(){
       });
     }
     if(d.focus) Object.assign(focus,d.focus);
+    if(d.snapshots&&Array.isArray(d.snapshots)) snapshots=d.snapshots;
     setSyncStatus('synced','✓ Connected — scores shared across all users');
+    renderSnapUI();renderKPI();
     return true;
   }catch(e){
     setSyncStatus('error','Cloud error: '+e.message);
@@ -357,7 +652,7 @@ async function saveToServer(){
     const r=await fetch('/api/scores',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scores,focus})
+      body:JSON.stringify({scores,focus,snapshots})
     });
     if(!r.ok) throw new Error('HTTP '+r.status);
     const d=await r.json();
@@ -373,8 +668,10 @@ function scheduleSave(){clearTimeout(saveTimer);setSyncStatus('saving','Saving..
 
 /* ── UI ── */
 function toast(msg,ms=3200){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),ms);}
-function badgeClass(pct){return pct===0?'badge-none':pct<0.4?'badge-low':pct<0.65?'badge-mid':pct<0.85?'badge-good':'badge-top';}
-function barColor(pct){return pct<0.4?'#ef4444':pct<0.65?'#f59e0b':pct<0.85?'#22c55e':'#059669';}
+function badgeClass(pct){return pct===0?'badge-none':pct<0.50?'badge-low':pct<0.71?'badge-mid':pct<0.90?'badge-good':'badge-top';}
+function maturityLevel(pct){return pct<0.50?1:pct<0.71?2:pct<0.90?3:4;}
+function maturityLabel(pct){const l=maturityLevel(pct);return['','Emerging','Developing','Proficient','Advanced'][l];}
+function barColor(pct){return pct<0.50?'#ef4444':pct<0.71?'#f59e0b':pct<0.90?'#22c55e':'#059669';}
 function agentCriteriaCounted(a){return SEGMENTS.reduce((acc,s)=>acc+s.criteria.filter((_,i)=>scores[a][s.key+'_'+i]>0).length,0);}
 function agentPct(a){return agentCriteriaCounted(a)/TOTAL_CRITERIA;}
 function isComplete(a){return agentCriteriaCounted(a)===TOTAL_CRITERIA;}
@@ -409,7 +706,7 @@ function renderTabs(){
 function renderSummary(){
   const a=AGENTS[cur],at=agentTotal(a);
   let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div></div>`;
-  h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value">${at.total}<span> / ${at.max}</span></div><div class="sc-sub">${Math.round(at.pct*100)}% maturity</div></div>`;
+  h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value" style="font-size:22px;">${maturityLabel(at.pct)}</div><div class="sc-sub">Level ${maturityLevel(at.pct)}</div></div>`;
   const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
   [["c-blue","stock"],["c-purple","spec"],["c-amber","industrial"],["c-green","connected"]].forEach(([cls,sk])=>{
     const s=SEGMENTS.find(x=>x.key===sk),ss=segScore(a,sk);
@@ -419,7 +716,7 @@ function renderSummary(){
       ?`background:${col};border-color:${col};color:#fff`
       :`background:#fff;border-color:${col};color:${col}`;
     const btnTxt=isFocus?"🎯 Priority Area Set":"Set as Priority Area";
-    h+=`<div class="summary-card ${cls}"><div class="sc-label">${s.label}</div><div class="sc-value">${ss.total}<span> / ${ss.max}</span></div><div class="sc-sub">${Math.round(ss.pct*100)}%</div><div class="focus-section"><button class="focus-btn ${isFocus?"focus-active":""}" style="${btnStyle}" onclick="toggleFocus('${a}','${sk}')">${btnTxt}</button></div></div>`;
+    h+=`<div class="summary-card ${cls}"><div class="sc-label">${s.label}</div><div class="sc-value" style="font-size:22px;">${maturityLabel(ss.pct)}</div><div class="sc-sub">Level ${maturityLevel(ss.pct)}</div><div class="focus-section"><button class="focus-btn ${isFocus?"focus-active":""}" style="${btnStyle}" onclick="toggleFocus('${a}','${sk}')">${btnTxt}</button></div></div>`;
   });
   document.getElementById("agent-summary").innerHTML=h;
 }
@@ -428,7 +725,7 @@ function renderScorecard(){
   SEGMENTS.forEach(seg=>{
     const ss=segScore(a,seg.key);
     h+=`<div class="segment-section"><div class="segment-eyebrow" style="color:${seg.color};">${seg.label} Segment<div class="seg-line"></div></div>`;
-    h+=`<div class="segment-card"><div class="segment-header"><span class="segment-title">${seg.label} &mdash; Maturity Assessment</span><span class="score-badge ${badgeClass(ss.pct)}">${ss.total} / ${ss.max} pts &nbsp; ${Math.round(ss.pct*100)}%</span></div>`;
+    h+=`<div class="segment-card"><div class="segment-header"><span class="segment-title">${seg.label} &mdash; Maturity Assessment</span><span class="score-badge ${badgeClass(ss.pct)}">${ss.total} / ${ss.max} pts &nbsp;&nbsp; Level ${maturityLevel(ss.pct)} &mdash; ${maturityLabel(ss.pct)}</span></div>`;
     h+=`<div class="col-header-row"><div class="col-header-blank"></div><div class="col-header-nums"><span>1 &mdash; Emerging</span><span>2 &mdash; Developing</span><span>3 &mdash; Proficient</span><span>4 &mdash; Advanced</span></div></div>`;
     seg.criteria.forEach((c,i)=>{
       const key=seg.key+'_'+i,cv=scores[a][key];
@@ -444,11 +741,30 @@ function renderScorecard(){
   document.getElementById('scorecard-content').innerHTML=h;
 }
 
-function setScore(agent,key,val){scores[agent][key]=scores[agent][key]===val?0:val;renderSummary();renderScorecard();renderTabs();updateProgress();scheduleSave();}
-function goto(i){cur=i;renderTabs();renderSummary();renderScorecard();updateProgress();document.getElementById('prev-btn').disabled=i===0;document.getElementById('next-btn').disabled=i===AGENTS.length-1;document.getElementById('prog').textContent=(i+1)+' / '+AGENTS.length;window.scrollTo({top:0,behavior:'smooth'});}
+function setScore(agent,key,val){scores[agent][key]=scores[agent][key]===val?0:val;renderSummary();renderScorecard();
+function setResTab(sk){
+  const sks=['stock','spec','industrial','connected'];
+  const cols={stock:'#2563eb',spec:'#7c3aed',industrial:'#d97706',connected:'#059669'};
+  sks.forEach(s=>{
+    const tab=document.getElementById('res-tab-'+s);
+    const panel=document.getElementById('res-panel-'+s);
+    if(tab){tab.className='res-tab'+(s===sk?' res-act':'');tab.style.background=s===sk?cols[sk]:'';}
+    if(panel) panel.className='res-panel'+(s===sk?' res-act':'');
+  });
+}
+renderTabs();updateProgress();scheduleSave();}
+function goto(i){cur=i;renderTabs();renderSummary();renderScorecard();updateProgress();renderSnapUI();document.getElementById('prev-btn').disabled=i===0;document.getElementById('next-btn').disabled=i===AGENTS.length-1;document.getElementById('prog').textContent=(i+1)+' / '+AGENTS.length;window.scrollTo({top:0,behavior:'smooth'});}
 function nav(d){const n=cur+d;if(n>=0&&n<AGENTS.length)goto(n);}
 function saveAgent(){const a=AGENTS[cur],done=isComplete(a);if(!done){const sc=agentCriteriaCounted(a);toast('\u26a0 '+a+' \u2014 '+sc+'/'+TOTAL_CRITERIA+' criteria scored.');}else{toast('\u2713 '+a+' saved and marked complete!');}renderTabs();updateProgress();if(cur<AGENTS.length-1)nav(1);else setView('kpi');}
-function setView(v){document.getElementById('score-view').style.display=v==='score'?'block':'none';document.getElementById('kpi-view').style.display=v==='kpi'?'block':'none';document.getElementById('btn-score').className=v==='score'?'btn btn-white':'btn btn-ghost';document.getElementById('btn-kpi').className=v==='kpi'?'btn btn-white':'btn btn-ghost';if(v==='kpi')renderKPI();}
+function setView(v){
+  document.getElementById('score-view').style.display=v==='score'?'block':'none';
+  document.getElementById('kpi-view').style.display=v==='kpi'?'block':'none';
+  document.getElementById('resources-view').style.display=v==='resources'?'block':'none';
+  ['score','kpi','resources'].forEach(id=>{
+    const btn=document.getElementById('btn-'+id);
+    if(btn) btn.className=v===id?'btn btn-white':'btn btn-ghost';
+  });
+}
 
 function renderKPI(){
   const gmx=MAX.stock+MAX.spec+MAX.industrial+MAX.connected;
@@ -459,6 +775,10 @@ function renderKPI(){
     {sk:"industrial",color:"#d97706",label:"Industrial"},
     {sk:"connected", color:"#059669",label:"Connected"}
   ];
+  const selId=document.getElementById("baseline-sel")?document.getElementById("baseline-sel").value:"";
+  const baseline=selId?snapshots.find(s=>s.id==selId):null;
+  const hasBaseline=!!baseline;
+
   let h=`<thead><tr>
     <th>Agent</th>
     <th style="border-left:4px solid #2563eb;">Stock /${MAX.stock}</th>
@@ -467,19 +787,58 @@ function renderKPI(){
     <th style="border-left:4px solid #059669;">Connected /${MAX.connected}</th>
     <th>Total</th><th>Maturity</th>
     <th style="border-left:3px solid #C8102E;background:#111827;color:#fff;">&#9733; Priority Segments</th>
+    ${hasBaseline?`<th style="border-left:3px solid #16a34a;background:#052e16;color:#fff;">&#128200; vs. ${baseline.label}</th>`:""}
   </tr></thead><tbody>`;
+
+  let btots={stock:0,spec:0,industrial:0,connected:0,grand:0};
+
   AGENTS.forEach((a,ai)=>{
     const st=segScore(a,"stock"),sp=segScore(a,"spec"),ind=segScore(a,"industrial"),con=segScore(a,"connected");
     const grand=st.total+sp.total+ind.total+con.total,pct=Math.round((grand/gmx)*100);
     const bc=barColor(grand/gmx),ac=AGENT_COLORS[ai];
     tots.stock+=st.total;tots.spec+=sp.total;tots.industrial+=ind.total;tots.connected+=con.total;tots.grand+=grand;
     const ck=isComplete(a)?" <span style=\"color:#16a34a;font-size:13px;\">&#10003;</span>":"";
+
     const chips=SCOLS.filter(({sk})=>focus[a]&&focus[a][sk]).map(({color,label})=>
       `<span class="ap-chip" style="border-color:${color};color:${color};background:${color}18;"><span class="chip-dot" style="background:${color};display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;vertical-align:middle;"></span>${label}</span>`
     ).join("");
     const apCell=chips
       ?`<div class="ap-chips">${chips}</div>`
       :`<span style="color:#888;font-size:12px;">— none set —</span>`;
+
+    let deltaCell="";
+    if(hasBaseline){
+      const bst=getBaselineSegTotal(baseline,a,"stock")||0;
+      const bsp=getBaselineSegTotal(baseline,a,"spec")||0;
+      const bind=getBaselineSegTotal(baseline,a,"industrial")||0;
+      const bcon=getBaselineSegTotal(baseline,a,"connected")||0;
+      const bgrand=bst+bsp+bind+bcon;
+      btots.stock+=bst;btots.spec+=bsp;btots.industrial+=bind;btots.connected+=bcon;btots.grand+=bgrand;
+      const grandDiff=grand-bgrand;
+      const grandPctDiff=bgrand>0?Math.round((grandDiff/bgrand)*100):0;
+      const segRows=SCOLS.map(({sk,color,label})=>{
+        const now={stock:st.total,spec:sp.total,industrial:ind.total,connected:con.total}[sk];
+        const was={stock:bst,spec:bsp,industrial:bind,connected:bcon}[sk];
+        const mx=MAX[sk];
+        const diff=now-was;
+        const pctDiff=was>0?Math.round((diff/was)*100):now>0?100:0;
+        const dc=diff>0?"d-up":diff<0?"d-dn":"d-eq";
+        const arrow=diff>0?"&#9650;":diff<0?"&#9660;":"&#9644;";
+        return `<div class="delta-seg">
+          <div class="delta-seg-label" style="color:${color};">${label.substring(0,3)}</div>
+          <div class="delta-seg-val ${dc}">${arrow} ${diff>0?"+":""}${pctDiff}%</div>
+        </div>`;
+      }).join("");
+      const totalDc=grandDiff>0?"d-up":grandDiff<0?"d-dn":"d-eq";
+      const totalArrow=grandDiff>0?"&#9650;":grandDiff<0?"&#9660;":"&#9644;";
+      deltaCell=`<td style="border-left:3px solid #1f2937;">
+        <div class="delta-wrap">
+          <div class="delta-segs">${segRows}</div>
+          <div class="delta-total ${totalDc}">${totalArrow} ${grandDiff>0?"+":""}${grandPctDiff}% overall &nbsp;<span style="color:#aaa;font-size:11px;">(${grandDiff>0?"+":""}${grandDiff} pts)</span></div>
+        </div>
+      </td>`;
+    }
+
     h+=`<tr>
       <td><span class="agent-dot" style="background:${ac}"></span>${a}${ck}</td>
       <td><span class="seg-score">${st.total}</span><span class="seg-pct">${Math.round(st.pct*100)}%</span></td>
@@ -487,17 +846,38 @@ function renderKPI(){
       <td><span class="seg-score">${ind.total}</span><span class="seg-pct">${Math.round(ind.pct*100)}%</span></td>
       <td><span class="seg-score">${con.total}</span><span class="seg-pct">${Math.round(con.pct*100)}%</span></td>
       <td><strong>${grand}</strong></td>
-      <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${ac};"></div></div><span class="pct-label" style="color:${bc};">${pct}%</span></div></td>
+      <td><div class="maturity-pill mp-${maturityLevel(grand/gmx)}" style="border-color:${barColor(grand/gmx)};color:${barColor(grand/gmx)};"><span class="mp-num">${maturityLevel(grand/gmx)}</span><span class="mp-lbl">${maturityLabel(grand/gmx)}</span><span class="mp-pct">${pct}%</span></div></td>
       <td style="border-left:3px solid #1f2937;">${apCell}</td>
+      ${hasBaseline?deltaCell:""}
     </tr>`;
   });
+
   const avgPct=Math.round((tots.grand/(AGENTS.length*gmx))*100);
+  let teamDelta="";
+  if(hasBaseline){
+    const bgrand=btots.grand;
+    const diff=tots.grand-bgrand;
+    const pctDiff=bgrand>0?Math.round((diff/bgrand)*100):0;
+    const dc=diff>0?"d-up":diff<0?"d-dn":"d-eq";
+    const arrow=diff>0?"&#9650;":diff<0?"&#9660;":"&#9644;";
+    const segRows=SCOLS.map(({sk,color,label})=>{
+      const now=tots[sk],was=btots[sk];
+      const d=now-was;
+      const pd=was>0?Math.round((d/was)*100):d>0?100:0;
+      const sdc=d>0?"d-up":d<0?"d-dn":"d-eq";
+      const arr=d>0?"&#9650;":d<0?"&#9660;":"&#9644;";
+      return `<div class="delta-seg"><div class="delta-seg-label" style="color:${color};">${label.substring(0,3)}</div><div class="delta-seg-val ${sdc}">${arr} ${d>0?"+":""}${pd}%</div></div>`;
+    }).join("");
+    teamDelta=`<td style="border-left:3px solid #1f2937;"><div class="delta-wrap"><div class="delta-segs">${segRows}</div><div class="delta-total ${dc}">${arrow} ${diff>0?"+":""}${pctDiff}% overall <span style="color:#aaa;font-size:11px;">(${diff>0?"+":""}${diff} pts)</span></div></div></td>`;
+  }
+
   h+=`<tr class="total-row">
     <td>TEAM TOTAL</td>
     <td>${tots.stock}</td><td>${tots.spec}</td><td>${tots.industrial}</td><td>${tots.connected}</td>
     <td>${tots.grand}</td>
-    <td><div class="bar-wrap"><div class="bar-track"><div class="bar-fill" style="width:${avgPct}%;background:${barColor(avgPct/100)};"></div></div><span class="pct-label" style="color:${barColor(avgPct/100)};">${avgPct}%</span></div></td>
+    <td><div class="maturity-pill mp-${maturityLevel(avgPct/100)}" style="border-color:${barColor(avgPct/100)};color:${barColor(avgPct/100)};"><span class="mp-num">${maturityLevel(avgPct/100)}</span><span class="mp-lbl">${maturityLabel(avgPct/100)}</span><span class="mp-pct">${avgPct}%</span></div></td>
     <td style="border-left:3px solid #1f2937;color:#888;font-size:12px;">Set priorities in Score view</td>
+    ${hasBaseline?teamDelta:""}
   </tr></tbody>`;
   document.getElementById("kpi-table").innerHTML=h;
 }
