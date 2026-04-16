@@ -1,7 +1,5 @@
-// api/scores.js
-// Uses Vercel Blob storage via its REST API.
-// BLOB_READ_WRITE_TOKEN is auto-injected when you connect a Blob store in Vercel dashboard.
-// No npm packages needed — pure fetch.
+// api/scores.js — Vercel Blob storage
+// Persists: scores, focus areas, snapshots, and custom agent names.
 
 const BLOB_FILENAME = 'cooper-scores.json';
 
@@ -12,19 +10,14 @@ function getBlobConfig() {
 }
 
 async function blobGet(config) {
-  // List blobs to find our file, then fetch it
   const listRes = await fetch(
     `https://blob.vercel-storage.com?prefix=${encodeURIComponent(BLOB_FILENAME)}&limit=1`,
     { headers: { Authorization: `Bearer ${config.token}` } }
   );
   if (!listRes.ok) throw new Error(`Blob LIST ${listRes.status}: ${await listRes.text()}`);
   const list = await listRes.json();
-  
   if (!list.blobs || list.blobs.length === 0) return null;
-  
-  // Fetch the actual file content from the blob URL
-  const blobUrl = list.blobs[0].url;
-  const res = await fetch(blobUrl, {
+  const res = await fetch(list.blobs[0].url, {
     headers: { Authorization: `Bearer ${config.token}` },
   });
   if (!res.ok) throw new Error(`Blob GET ${res.status}`);
@@ -32,20 +25,17 @@ async function blobGet(config) {
 }
 
 async function blobPut(config, data) {
-  const res = await fetch(
-    `https://blob.vercel-storage.com/${BLOB_FILENAME}`,
-    {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${config.token}`,
-        'Content-Type': 'application/json',
-        'x-api-version': '7',
-        'x-add-random-suffix': '0',
-        'x-cache-control-max-age': '0',
-      },
-      body: JSON.stringify(data),
-    }
-  );
+  const res = await fetch(`https://blob.vercel-storage.com/${BLOB_FILENAME}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${config.token}`,
+      'Content-Type': 'application/json',
+      'x-api-version': '7',
+      'x-add-random-suffix': '0',
+      'x-cache-control-max-age': '0',
+    },
+    body: JSON.stringify(data),
+  });
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Blob PUT ${res.status}: ${text}`);
@@ -59,23 +49,33 @@ export default async function handler(req, res) {
   const config = getBlobConfig();
   if (!config) {
     return res.status(500).json({
-      error: 'BLOB_READ_WRITE_TOKEN not found. Connect a Blob store to this project in Vercel dashboard.',
+      error: 'BLOB_READ_WRITE_TOKEN not found. Connect a Blob store in Vercel dashboard.',
     });
   }
 
   if (req.method === 'GET') {
     try {
       const data = await blobGet(config);
-      return res.status(200).json({ scores: data?.scores || {}, goals: data?.goals || {} });
+      return res.status(200).json({
+        scores:    data?.scores    || {},
+        focus:     data?.focus     || {},
+        snapshots: data?.snapshots || [],
+        agents:    data?.agents    || [],
+      });
     } catch (e) {
-      return res.status(500).json({ scores: {}, goals: {}, error: e.message });
+      return res.status(500).json({ scores: {}, focus: {}, snapshots: [], agents: [], error: e.message });
     }
   }
 
   if (req.method === 'POST') {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-      await blobPut(config, { scores: body.scores || {}, goals: body.goals || {} });
+      await blobPut(config, {
+        scores:    body.scores    || {},
+        focus:     body.focus     || {},
+        snapshots: body.snapshots || [],
+        agents:    body.agents    || [],
+      });
       return res.status(200).json({ ok: true });
     } catch (e) {
       return res.status(500).json({ error: e.message });
