@@ -697,8 +697,10 @@ function agentCriteriaCounted(a){return SEGMENTS.reduce((acc,s)=>acc+s.criteria.
 function agentPct(a){return agentCriteriaCounted(a)/TOTAL_CRITERIA;}
 function isComplete(a){return agentCriteriaCounted(a)===TOTAL_CRITERIA;}
 function completedCount(){return AGENTS.filter(a=>isComplete(a)).length;}
-function segScore(a,sk){let t=0,mx=0;SEGMENTS.find(s=>s.key===sk).criteria.forEach((_,i)=>{const v=scores[a][sk+'_'+i];if(v>0)t+=v;mx+=4;});return{total:t,max:mx,pct:mx>0?t/mx:0};}
-function agentTotal(a){let t=0,mx=0;SEGMENTS.forEach(s=>{const ss=segScore(a,s.key);t+=ss.total;mx+=ss.max;});return{total:t,max:mx,pct:mx>0?t/mx:0};}
+function segScore(a,sk){
+  if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}let t=0,mx=0;SEGMENTS.find(s=>s.key===sk).criteria.forEach((_,i)=>{const v=scores[a][sk+'_'+i];if(v>0)t+=v;mx+=4;});return{total:t,max:mx,pct:mx>0?t/mx:0};}
+function agentTotal(a){
+  if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}let t=0,mx=0;SEGMENTS.forEach(s=>{const ss=segScore(a,s.key);t+=ss.total;mx+=ss.max;});return{total:t,max:mx,pct:mx>0?t/mx:0};}
 
 function updateProgress(){
   const done=completedCount(),pct=Math.round((done/AGENTS.length)*100);
