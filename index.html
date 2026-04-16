@@ -140,6 +140,12 @@
 .res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
 .res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
 .res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
+.tab-rename-wrap{position:relative;display:inline-flex;align-items:center;}
+.tab-rename-input{font-size:13px;font-weight:800;background:transparent;border:none;border-bottom:2px solid rgba(255,255,255,.6);color:#fff;padding:2px 4px;width:80px;outline:none;text-align:center;cursor:text;}
+.tab-rename-input:focus{border-bottom-color:#C8102E;background:rgba(255,255,255,.08);}
+.rename-confirm{background:#C8102E;border:none;color:#fff;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:800;cursor:pointer;margin-left:4px;display:none;}
+.tab-rename-input:focus ~ .rename-confirm{display:inline-block;}
+.edit-hint{font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:2px;}
 .snap-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:13px 20px;margin-bottom:18px;box-shadow:0 1px 6px rgba(0,0,0,.08);flex-wrap:wrap;border:1.5px solid #e8e9ec;}
 .snap-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
 .snap-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
@@ -638,6 +644,9 @@ async function loadFromServer(){
     }
     if(d.focus) Object.assign(focus,d.focus);
     if(d.snapshots&&Array.isArray(d.snapshots)) snapshots=d.snapshots;
+    if(d.agents&&Array.isArray(d.agents)&&d.agents.length===AGENTS.length){
+      d.agents.forEach((name,i)=>{ if(name) AGENTS[i]=name; });
+    }
     setSyncStatus('synced','✓ Connected — scores shared across all users');
     renderSnapUI();renderKPI();
     return true;
@@ -652,7 +661,7 @@ async function saveToServer(){
     const r=await fetch('/api/scores',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scores,focus,snapshots})
+      body:JSON.stringify({scores,focus,snapshots,agents:AGENTS})
     });
     if(!r.ok) throw new Error('HTTP '+r.status);
     const d=await r.json();
@@ -685,6 +694,24 @@ function updateProgress(){
   document.getElementById('progress-count').textContent=done+' / '+AGENTS.length+' agents fully scored';
 }
 
+function renameAgent(i, newName){
+  newName = newName.trim();
+  if(!newName || newName === AGENTS[i]) return;
+  const oldName = AGENTS[i];
+  // migrate scores and focus to new name
+  if(scores[oldName]){ scores[newName]=scores[oldName]; delete scores[oldName]; }
+  if(focus[oldName]){ focus[newName]=focus[oldName]; delete focus[oldName]; }
+  // migrate snapshots
+  snapshots.forEach(snap=>{
+    if(snap.data&&snap.data[oldName]){ snap.data[newName]=snap.data[oldName]; delete snap.data[oldName]; }
+  });
+  AGENTS[i] = newName;
+  cur = i;
+  renderTabs(); renderSummary(); renderScorecard(); renderKPI();
+  scheduleSave();
+  toast('✓ Agent renamed to ' + newName);
+}
+
 function renderTabs(){
   const c=document.getElementById('agent-tabs');c.innerHTML='';
   AGENTS.forEach((a,i)=>{
@@ -694,7 +721,19 @@ function renderTabs(){
     const fd=document.createElement('div');fd.className='tab-fill';
     if(!active){fd.style.width=fillW+'%';fd.style.background=color;fd.style.opacity=done?'1':'0.22';}
     const inn=document.createElement('div');inn.className='tab-inner';
-    const ns=document.createElement('span');ns.className='tab-name';ns.textContent=a+(done&&!active?' \u2713':'');
+    const ns=document.createElement('span');ns.className='tab-name';
+    if(active){
+      ns.innerHTML=`<span class="tab-rename-wrap">
+        <input class="tab-rename-input" id="rename-input-${i}" value="${a.replace(/'/g,"&#39;")}"
+          title="Click to rename this agent"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();renameAgent(${i},this.value);this.blur();}"
+          onblur="renameAgent(${i},this.value)"
+          onclick="event.stopPropagation()"
+        />
+      </span><span class="edit-hint">click to rename</span>`;
+    } else {
+      ns.textContent = a + (done && !active ? ' ✓' : '');
+    }
     const ps=document.createElement('span');ps.className='tab-pct';ps.textContent=Math.round(pct*100)+'%';
     inn.appendChild(ns);inn.appendChild(ps);btn.appendChild(fd);btn.appendChild(inn);
     if(!active){if(done){btn.style.borderColor=color;btn.style.color='#fff';}else if(fillW>0){btn.style.borderColor=color;btn.style.color='#1a1a2e';}}
@@ -755,7 +794,7 @@ function setResTab(sk){
 renderTabs();updateProgress();scheduleSave();}
 function goto(i){cur=i;renderTabs();renderSummary();renderScorecard();updateProgress();renderSnapUI();document.getElementById('prev-btn').disabled=i===0;document.getElementById('next-btn').disabled=i===AGENTS.length-1;document.getElementById('prog').textContent=(i+1)+' / '+AGENTS.length;window.scrollTo({top:0,behavior:'smooth'});}
 function nav(d){const n=cur+d;if(n>=0&&n<AGENTS.length)goto(n);}
-function saveAgent(){const a=AGENTS[cur],done=isComplete(a);if(!done){const sc=agentCriteriaCounted(a);toast('\u26a0 '+a+' \u2014 '+sc+'/'+TOTAL_CRITERIA+' criteria scored.');}else{toast('\u2713 '+a+' saved and marked complete!');}renderTabs();updateProgress();if(cur<AGENTS.length-1)nav(1);else setView('kpi');}
+function saveAgent(){const a=AGENTS[cur],done=isComplete(a);if(!done){const sc=agentCriteriaCounted(a);toast('\u26a0 '+a+' \u2014 '+sc+'/'+TOTAL_CRITERIA+' criteria scored.');}else{toast('\u2713 '+a+' saved and marked complete!');}renderTabs();updateProgress();window.scrollTo({top:0,behavior:'smooth'});if(cur<AGENTS.length-1)nav(1);else setView('kpi');}
 function setView(v){
   document.getElementById('score-view').style.display=v==='score'?'block':'none';
   document.getElementById('kpi-view').style.display=v==='kpi'?'block':'none';
