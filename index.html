@@ -6,13 +6,80 @@
 <title>Agent Score Card | Cooper Lighting Solutions</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --sidebar-w: 220px; }
+  html, body { margin: 0; padding: 0; }
+  body { display: flex; min-height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: #111827; display: flex; flex-direction: column; position: fixed; left: 0; top: 0; bottom: 0; z-index: 200; transition: width .2s ease, min-width .2s ease; overflow: hidden; }
+  .sidebar.collapsed { width: 64px; min-width: 64px; }
+  .sidebar-logo { display: flex; align-items: center; gap: 10px; padding: 18px 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08); flex-shrink: 0; }
+  .sidebar-logo-bar { width: 4px; height: 36px; background: #C8102E; border-radius: 2px; flex-shrink: 0; }
+  .sidebar-brand-co { font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: #C8102E; font-weight: 700; white-space: nowrap; }
+  .sidebar-brand-tool { font-size: 14px; font-weight: 800; color: #fff; white-space: nowrap; }
+  .sidebar-collapse-btn { margin-left: auto; background: transparent; border: none; color: rgba(255,255,255,.4); cursor: pointer; font-size: 22px; padding: 4px 6px; border-radius: 5px; transition: all .15s; flex-shrink: 0; }
+  .sidebar-collapse-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .sidebar.collapsed .sidebar-collapse-btn { transform: rotate(180deg); }
+  .sidebar.collapsed .sidebar-brand-co,
+  .sidebar.collapsed .sidebar-brand-tool,
+  .sidebar.collapsed .sidebar-link-text,
+  .sidebar.collapsed .sidebar-chevron,
+  .sidebar.collapsed .sidebar-section-label,
+  .sidebar.collapsed .sidebar-submenu,
+  .sidebar.collapsed .sidebar-sync-msg { display: none; }
+  .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 0; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.1) transparent; }
+  .sidebar-section-label { font-size: 9px; font-weight: 800; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: .12em; padding: 10px 16px 4px; }
+  .sidebar-link { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent; border: none; color: rgba(255,255,255,.6); font-size: 13px; font-weight: 600; padding: 10px 16px; cursor: pointer; transition: all .15s; text-align: left; border-radius: 0; position: relative; white-space: nowrap; }
+  .sidebar-link:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .sidebar-link.active { background: rgba(200,16,46,.18); color: #fff; border-left: 3px solid #C8102E; padding-left: 13px; }
+  .sidebar-icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+  .sidebar-chevron { margin-left: auto; font-size: 16px; transition: transform .2s; }
+  .sidebar-chevron.open { transform: rotate(90deg); }
+  .sidebar-submenu { max-height: 0; overflow: hidden; transition: max-height .22s ease; background: rgba(0,0,0,.2); }
+  .sidebar-submenu.open { max-height: 300px; }
+  .sidebar-sublink { display: flex; align-items: center; gap: 10px; width: 100%; background: transparent; border: none; color: rgba(255,255,255,.5); font-size: 12px; font-weight: 600; padding: 9px 16px 9px 44px; cursor: pointer; transition: all .15s; text-align: left; white-space: nowrap; }
+  .sidebar-sublink:hover { background: rgba(255,255,255,.06); color: #fff; }
+  .sidebar-sublink.active { color: #C8102E; font-weight: 800; }
+  .sidebar-footer { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,.08); flex-shrink: 0; }
+  .sidebar-sync { display: flex; align-items: center; gap: 8px; }
+  .sidebar-sync-msg { font-size: 11px; color: rgba(255,255,255,.4); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar-reset-btn { display: flex; align-items: center; gap: 8px; width: 100%; background: transparent; border: 1.5px solid rgba(255,255,255,.12); color: rgba(255,255,255,.45); font-size: 11px; font-weight: 700; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-top: 10px; transition: all .15s; text-align: left; white-space: nowrap; overflow: hidden; }
+  .sidebar-reset-btn:hover { background: rgba(200,16,46,.2); border-color: #C8102E; color: #fff; }
+  .sidebar.collapsed .sidebar-reset-btn { padding: 8px; justify-content: center; font-size: 14px; }
+  .sidebar.collapsed .sidebar-reset-btn span.reset-text { display: none; }
+
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 199; }
+
+  /* ── APP SHELL ── */
+  .app-shell { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; transition: margin-left .2s ease; }
+  .app-shell.collapsed { margin-left: 64px; }
+
+  /* ── TOPBAR ── */
+  .topbar { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 52px; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+  .topbar-menu-btn { display: none; background: transparent; border: none; color: rgba(255,255,255,.7); font-size: 20px; cursor: pointer; padding: 6px 8px; border-radius: 5px; }
+  .topbar-menu-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+
+  /* ── MAIN CONTENT ── */
+  .page-wrap { flex: 1; max-width: 1280px; width: 100%; margin: 0 auto; padding: 24px 24px 80px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .app-shell { margin-left: 0 !important; }
+    .sidebar { transform: translateX(-100%); transition: transform .25s ease, width .2s ease; width: var(--sidebar-w) !important; }
+    .sidebar.mobile-open { transform: translateX(0); }
+    .sidebar-overlay.mobile-open { display: block; }
+    .topbar-menu-btn { display: flex; align-items: center; justify-content: center; }
+    :root { --sidebar-w: 240px; }
+  }
+
   html, body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; min-height: 100vh; font-size: 15px; }
-  .site-header { background: #1a1a2e; padding: 0 36px; display: flex; align-items: center; justify-content: space-between; height: 72px; box-shadow: 0 2px 12px rgba(0,0,0,0.35); position: sticky; top: 0; z-index: 100; }
+  .site-header { display: none; }
   .brand { display: flex; align-items: center; gap: 16px; }
   .brand-bar { width: 5px; height: 42px; background: #C8102E; border-radius: 3px; }
   .brand-company { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #C8102E; font-weight: 700; }
   .brand-tool { font-size: 20px; font-weight: 700; color: #ffffff; }
-  .header-nav { display: flex; gap: 10px; align-items: center; }
+
   .btn { border: none; border-radius: 5px; cursor: pointer; font-size: 14px; font-weight: 700; padding: 10px 22px; transition: all .15s; letter-spacing: .03em; line-height: 1; }
   .btn-ghost { background: transparent; border: 2px solid rgba(255,255,255,0.4); color: #ffffff; }
   .btn-ghost:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.8); }
@@ -243,30 +310,74 @@
   <div class="loading-msg">Loading saved scores from cloud...</div>
 </div>
 
-<header class="site-header">
-  <div class="brand">
-    <div class="brand-bar"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-bar"></div>
     <div>
-      <div class="brand-company">Cooper Lighting Solutions</div>
-      <div class="brand-tool">Agent Score Card</div>
+      <div class="sidebar-brand-co">Cooper Lighting</div>
+      <div class="sidebar-brand-tool">Agent Score Card</div>
     </div>
+    <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" onclick="toggleSidebar()" title="Collapse sidebar">&#8249;</button>
   </div>
-  <div class="header-nav">
-    <button class="btn btn-ghost" id="btn-score"     onclick="setView('score')">&#9654; Score Agents</button>
-    <button class="btn btn-ghost" id="btn-kpi"       onclick="setView('kpi')">&#9783; KPI Dashboard</button>
-    <button class="btn btn-ghost" id="btn-resources" onclick="setView('resources')">&#128218; Resources</button>
-  </div>
-</header>
 
-<div class="sync-bar">
-  <div class="sync-left">
-    <div class="sync-dot" id="sync-dot"></div>
-    <span id="sync-msg">Connecting to cloud...</span>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Main</div>
+
+    <button class="sidebar-link" id="nav-score" onclick="setView('score')">
+      <span class="sidebar-icon">&#9654;</span>
+      <span class="sidebar-link-text">Score Agents</span>
+    </button>
+
+    <button class="sidebar-link sidebar-has-sub" id="nav-kpi-parent" onclick="toggleAccordion('acc-kpi')">
+      <span class="sidebar-icon">&#9783;</span>
+      <span class="sidebar-link-text">KPI Dashboard</span>
+      <span class="sidebar-chevron" id="chev-kpi">&#8250;</span>
+    </button>
+    <div class="sidebar-submenu" id="acc-kpi">
+      <button class="sidebar-sublink" id="nav-kpi" onclick="setView('kpi')">
+        <span class="sidebar-link-text">Overview</span>
+      </button>
+    </div>
+
+    <div class="sidebar-section-label">Training</div>
+
+    <button class="sidebar-link sidebar-has-sub" id="nav-res-parent" onclick="toggleAccordion('acc-res')">
+      <span class="sidebar-icon">&#128218;</span>
+      <span class="sidebar-link-text">Resources</span>
+      <span class="sidebar-chevron" id="chev-res">&#8250;</span>
+    </button>
+    <div class="sidebar-submenu" id="acc-res">
+      <button class="sidebar-sublink" id="nav-stock" onclick="setView('resources');setResTab('stock')">
+        <span class="sidebar-link-text">Stock</span>
+      </button>
+      <button class="sidebar-sublink" id="nav-spec" onclick="setView('resources');setResTab('spec')">
+        <span class="sidebar-link-text">Spec</span>
+      </button>
+      <button class="sidebar-sublink" id="nav-industrial" onclick="setView('resources');setResTab('industrial')">
+        <span class="sidebar-link-text">Industrial</span>
+      </button>
+      <button class="sidebar-sublink" id="nav-connected" onclick="setView('resources');setResTab('connected')">
+        <span class="sidebar-link-text">Connected</span>
+      </button>
+    </div>
+
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-sync">
+      <div class="sync-dot" id="sync-dot"></div>
+      <span id="sync-msg" class="sidebar-sync-msg">Connecting...</span>
+    </div>
+    <button class="sidebar-reset-btn" onclick="confirmReset()">&#8635; Reset All Scores</button>
   </div>
-  <div class="sync-right">
-    <button class="mini-btn" onclick="exportExcel()">&#8595; Export Excel</button>
-    <button class="mini-btn" onclick="confirmReset()">&#8635; Reset All Scores</button>
-  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<div class="app-shell" id="app-shell">
+<div class="topbar" id="topbar">
+  <button class="topbar-menu-btn" onclick="toggleSidebar()" title="Toggle menu">&#9776;</button>
+  <div class="topbar-right"></div>
 </div>
 
 <main class="page-wrap">
@@ -502,6 +613,7 @@
 <footer class="site-footer">
   <strong>Cooper Lighting Solutions</strong> &nbsp;&mdash;&nbsp; Agent Score Card &nbsp;&mdash;&nbsp; Internal Use Only &nbsp;&mdash;&nbsp; &copy; 2026 Cooper Lighting Solutions. All rights reserved.
 </footer>
+</div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -927,10 +1039,46 @@ function setView(v){
   document.getElementById('score-view').style.display=v==='score'?'block':'none';
   document.getElementById('kpi-view').style.display=v==='kpi'?'block':'none';
   document.getElementById('resources-view').style.display=v==='resources'?'block':'none';
-  ['score','kpi','resources'].forEach(id=>{
-    const btn=document.getElementById('btn-'+id);
-    if(btn) btn.className=v===id?'btn btn-white':'btn btn-ghost';
-  });
+  // Update sidebar active states
+  const map={
+    score:['nav-score'],
+    kpi:['nav-kpi','nav-kpi-parent'],
+    resources:['nav-res-parent']
+  };
+  document.querySelectorAll('.sidebar-link,.sidebar-sublink').forEach(el=>el.classList.remove('active'));
+  (map[v]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('active');});
+  // Auto-open accordion for active section
+  if(v==='kpi') openAccordion('acc-kpi');
+  if(v==='resources') openAccordion('acc-res');
+  // Mobile: close sidebar after nav
+  const sb=document.getElementById('sidebar');
+  if(sb&&sb.classList.contains('mobile-open')){sb.classList.remove('mobile-open');document.getElementById('sidebar-overlay').classList.remove('mobile-open');}
+}
+function openAccordion(id){
+  const menu=document.getElementById(id);
+  const chev=document.getElementById(id.replace('acc-','chev-'));
+  if(menu){menu.classList.add('open');if(chev)chev.classList.add('open');}
+}
+function toggleAccordion(id){
+  const menu=document.getElementById(id);
+  const chev=document.getElementById(id.replace('acc-','chev-'));
+  if(!menu) return;
+  const isOpen=menu.classList.contains('open');
+  menu.classList.toggle('open');
+  if(chev) chev.classList.toggle('open',!isOpen);
+}
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const shell=document.getElementById('app-shell');
+  const btn=document.getElementById('sidebar-collapse-btn');
+  const ov=document.getElementById('sidebar-overlay');
+  if(window.innerWidth<=768){
+    sb.classList.toggle('mobile-open');
+    ov.classList.toggle('mobile-open');
+  } else {
+    sb.classList.toggle('collapsed');
+    shell.classList.toggle('collapsed');
+  }
 }
 
 function renderKPI(){
