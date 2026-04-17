@@ -150,6 +150,18 @@
 .rename-modal-cancel{background:transparent;border:1.5px solid #e8e9ec;color:#888;border-radius:6px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;}
 .rename-modal-save{background:#C8102E;border:none;color:#fff;border-radius:6px;padding:8px 20px;font-size:12px;font-weight:800;cursor:pointer;}
 .rename-modal-save:hover{background:#a50d26;}
+.snap-item{display:flex;align-items:center;justify-content:space-between;background:#f9fafb;border:1.5px solid #e8e9ec;border-radius:8px;padding:8px 12px;gap:10px;}
+.snap-item-left{display:flex;flex-direction:column;gap:2px;flex:1;}
+.snap-item-name{font-size:12px;font-weight:800;color:#1a1a2e;}
+.snap-item-date{font-size:10px;color:#aaa;font-weight:600;}
+.snap-del-btn{background:transparent;border:none;color:#ccc;cursor:pointer;font-size:13px;padding:2px 4px;border-radius:4px;line-height:1;flex-shrink:0;}
+.snap-del-btn:hover{background:#fee2e2;color:#ef4444;}
+.snap-version-chip{display:inline-flex;flex-direction:column;gap:2px;background:#f4f5f7;border:1.5px solid #e8e9ec;border-radius:8px;padding:6px 12px;cursor:pointer;transition:all .15s;}
+.snap-version-chip:hover{border-color:#1a1a2e;background:#f0f2f5;}
+.snap-version-active{background:#1a1a2e!important;border-color:#1a1a2e!important;}
+.snap-version-active .svc-name,.snap-version-active .svc-date{color:#fff!important;}
+.svc-name{font-size:11px;font-weight:800;color:#1a1a2e;}
+.svc-date{font-size:10px;color:#aaa;font-weight:600;}
 .snap-bar{display:flex;align-items:center;gap:10px;background:#fff;border-radius:10px;padding:13px 20px;margin-bottom:18px;box-shadow:0 1px 6px rgba(0,0,0,.08);flex-wrap:wrap;border:1.5px solid #e8e9ec;}
 .snap-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;}
 .snap-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1;}
@@ -259,10 +271,12 @@
 
 <main class="page-wrap">
   <div id="score-view">
-    <div class="snap-bar">
-      <span class="snap-label">Snapshots</span>
-      <div class="snap-chips" id="snap-chips-score"><span class="no-snap">No snapshots yet</span></div>
-      <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
+    <div class="snap-bar" style="flex-direction:column;align-items:stretch;gap:10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="snap-label">Saved Snapshots</span>
+        <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
+      </div>
+      <div id="snap-chips-score"><span class="no-snap">No snapshots yet</span></div>
     </div>
     <div class="progress-banner">
       <span class="progress-label">Overall Progress</span>
@@ -288,12 +302,14 @@
     </div>
   </div>
   <div id="kpi-view" style="display:none;">
-    <div class="snap-bar">
-      <span class="snap-label">Compare baseline:</span>
-      <select class="baseline-sel" id="baseline-sel"><option value="">No baseline</option></select>
-      <div class="snap-chips" id="snap-chips-kpi"><span class="no-snap">No snapshots yet</span></div>
-      <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
-      <button class="snap-clear" onclick="if(confirm('Delete all snapshots?')){snapshots=[];renderSnapUI();renderKPI();scheduleSave();}">Clear all</button>
+    <div class="snap-bar" style="flex-direction:column;align-items:stretch;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span class="snap-label">Compare version:</span>
+        <select class="baseline-sel" id="baseline-sel" style="flex:1;min-width:220px;"><option value="">— Select version to compare —</option></select>
+        <button class="snap-btn" onclick="saveSnapshot()">+ Save snapshot</button>
+        <button class="snap-clear" onclick="if(confirm('Delete all snapshots?')){snapshots=[];renderSnapUI();renderKPI();scheduleSave();}">Clear all</button>
+      </div>
+      <div id="snap-chips-kpi" style="display:flex;flex-wrap:wrap;gap:6px;"><span class="no-snap">No snapshots yet</span></div>
     </div>
     <div class="kpi-header-row">
       <div>
@@ -565,12 +581,56 @@ function getMonthLabel(){
   return now.toLocaleString('en-US',{month:'long'})+' Review';
 }
 function saveSnapshot(){
-  const label=getMonthLabel();
+  // Open modal to let user name the snapshot
+  const existing=document.getElementById('snap-name-modal');
+  if(existing) existing.remove();
+  const now=new Date();
+  const defaultName=getMonthLabel();
+  const dateStr=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  const modal=document.createElement('div');
+  modal.id='snap-name-modal';
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;';
+  modal.innerHTML=`<div style="background:#fff;border-radius:12px;padding:28px;width:360px;box-shadow:0 8px 40px rgba(0,0,0,.25);">
+    <div style="font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Save Snapshot</div>
+    <div style="font-size:13px;color:#888;margin-bottom:16px;">${dateStr} at ${timeStr}</div>
+    <input id="snap-name-input" style="width:100%;font-size:16px;font-weight:700;border:2px solid #e8e9ec;border-radius:8px;padding:10px 14px;outline:none;color:#1a1a2e;box-sizing:border-box;margin-bottom:8px;" value="${defaultName}" maxlength="40" placeholder="e.g. April Review, Q1 Baseline..." />
+    <div style="font-size:11px;color:#aaa;margin-bottom:18px;">Give this snapshot a name so you can find it later.</div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="document.getElementById('snap-name-modal').remove()" style="flex:1;background:transparent;border:1.5px solid #e8e9ec;color:#888;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer;">Cancel</button>
+      <button onclick="confirmSnapshot()" style="flex:2;background:#C8102E;border:none;color:#fff;border-radius:6px;padding:10px;font-size:12px;font-weight:800;cursor:pointer;">Save Snapshot</button>
+    </div>
+  </div>`;
+  modal.addEventListener('click',e=>{ if(e.target===modal) modal.remove(); });
+  document.body.appendChild(modal);
+  const inp=document.getElementById('snap-name-input');
+  inp.focus(); inp.select();
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();confirmSnapshot();}
+    if(e.key==='Escape') modal.remove();
+  });
+  inp.addEventListener('focus',()=>{ inp.style.borderColor='#C8102E'; });
+}
+function confirmSnapshot(){
+  const inp=document.getElementById('snap-name-input');
+  if(!inp) return;
+  const label=inp.value.trim()||getMonthLabel();
+  const modal=document.getElementById('snap-name-modal');
+  if(modal) modal.remove();
+  const now=new Date();
+  const dateLabel=now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const snap={
+    id:Date.now(),
+    label,
+    dateLabel,
+    ts:now.toISOString(),
+    data:JSON.parse(JSON.stringify(scores))
+  };
+  // Replace if same label exists, otherwise prepend
   const existing=snapshots.findIndex(s=>s.label===label);
-  const snap={id:Date.now(),label,ts:new Date().toISOString(),data:JSON.parse(JSON.stringify(scores))};
   if(existing!==-1) snapshots[existing]=snap;
   else snapshots.unshift(snap);
-  if(snapshots.length>12) snapshots=snapshots.slice(0,12);
+  if(snapshots.length>20) snapshots=snapshots.slice(0,20);
   renderSnapUI();
   scheduleSave();
   toast('✓ Snapshot saved: '+label);
@@ -584,25 +644,48 @@ function deleteSnapshot(id){
   scheduleSave();
 }
 function renderSnapUI(){
-  // Score view chips
+  const fmtDate=ts=>{ try{ return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }catch(e){ return ''; } };
+  // Score view — list of saved snapshots
   const sc=document.getElementById('snap-chips-score');
   if(sc){
-    if(snapshots.length===0){sc.innerHTML='<span class="no-snap">No snapshots saved yet</span>';}
-    else{sc.innerHTML=snapshots.map(s=>`<span class="snap-chip baseline-chip" title="${new Date(s.ts).toLocaleString()}">${s.label}<span style="margin-left:4px;opacity:.5;cursor:pointer;font-size:10px;" onclick="event.stopPropagation();deleteSnapshot(${s.id})">x</span></span>`).join('');}
+    if(snapshots.length===0){
+      sc.innerHTML='<span class="no-snap">No snapshots saved yet</span>';
+    } else {
+      sc.innerHTML=snapshots.map(s=>`
+        <div class="snap-item">
+          <div class="snap-item-left">
+            <div class="snap-item-name">${s.label}</div>
+            <div class="snap-item-date">${s.dateLabel||fmtDate(s.ts)}</div>
+          </div>
+          <button class="snap-del-btn" onclick="deleteSnapshot(${s.id})" title="Delete">&#10005;</button>
+        </div>`).join('');
+    }
   }
-  // KPI baseline selector
+  // KPI baseline selector — grouped with date display
   const sel=document.getElementById('baseline-sel');
   if(sel){
     const cur=sel.value;
-    sel.innerHTML='<option value="">No baseline</option>'+snapshots.map(s=>`<option value="${s.id}">${s.label}</option>`).join('');
+    sel.innerHTML='<option value="">— Select version to compare —</option>'+
+      snapshots.map(s=>`<option value="${s.id}">${s.label} (${s.dateLabel||fmtDate(s.ts)})</option>`).join('');
     if(cur&&snapshots.find(s=>s.id==cur)) sel.value=cur;
+    else sel.value='';
     sel.onchange=()=>renderKPI();
   }
-  // KPI chips
+  // KPI chips — show as cards
   const kc=document.getElementById('snap-chips-kpi');
   if(kc){
-    if(snapshots.length===0){kc.innerHTML='<span class="no-snap">No snapshots yet — save one to compare</span>';}
-    else{kc.innerHTML=snapshots.map(s=>`<span class="snap-chip baseline-chip" title="${new Date(s.ts).toLocaleString()}">${s.label}</span>`).join('');}
+    if(snapshots.length===0){
+      kc.innerHTML='<span class="no-snap">No snapshots yet — save one above to compare versions</span>';
+    } else {
+      const selId=sel?sel.value:'';
+      kc.innerHTML=snapshots.map(s=>{
+        const active=selId==s.id;
+        return `<span class="snap-version-chip${active?' snap-version-active':''}" onclick="document.getElementById('baseline-sel').value=${s.id};renderKPI();renderSnapUI();" title="Click to compare">
+          <span class="svc-name">${s.label}</span>
+          <span class="svc-date">${s.dateLabel||fmtDate(s.ts)}</span>
+        </span>`;
+      }).join('');
+    }
   }
 }
 function getBaselineScore(snap,agent,segKey,critIdx){
