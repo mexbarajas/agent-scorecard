@@ -207,11 +207,14 @@
 .res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
 .res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
 .res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
-.sc-owner-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:7px;gap:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:7px;}
-.sc-owner-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;flex-shrink:0;}
-.sc-owner-val{font-size:13px;font-weight:700;color:#fff;text-align:right;word-break:break-word;}
-.sc-edit-btn{background:#C8102E;border:none;color:#fff;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;width:100%;transition:background .15s;}
-.sc-edit-btn:hover{background:#a50d26;}
+.agent-info-card{display:flex;flex-direction:column;gap:0;border-top:4px solid #1a1a2e!important;min-width:160px;flex:1 1 160px;}
+.aic-name{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:12px;line-height:1.2;word-break:break-word;}
+.aic-field{display:flex;flex-direction:column;gap:2px;padding:8px 0;border-top:1px solid #f0f1f3;}
+.aic-label{font-size:10px;font-weight:800;color:#aaa;text-transform:uppercase;letter-spacing:.1em;}
+.aic-val{font-size:14px;font-weight:700;color:#1a1a2e;word-break:break-word;}
+.aic-empty{font-size:13px;font-weight:400;color:#ccc;font-style:italic;}
+.sc-edit-btn{background:#1a1a2e;border:none;color:#fff;border-radius:6px;padding:9px 14px;font-size:11px;font-weight:800;cursor:pointer;width:100%;transition:background .15s;margin-top:14px;letter-spacing:.04em;}
+.sc-edit-btn:hover{background:#C8102E;}
 .rename-field-label{display:block;font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
 .rename-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;}
 .rename-modal{background:#fff;border-radius:12px;padding:28px 28px 22px;min-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25);}
@@ -1013,7 +1016,7 @@ function renderSummary(){
   const a=AGENTS[cur];
   if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}
   const at=agentTotal(a);
-  let h=`<div class="summary-card c-navy"><div class="sc-label">Agent Name</div><div class="sc-value" style="font-size:18px;">${a}</div><div class="sc-owner-row"><span class="sc-owner-label">Agent Owner</span><span class="sc-owner-val">${agentOwners[a]||'<em style=\"opacity:.4;\">Not set</em>'}</span></div><div class="sc-owner-row"><span class="sc-owner-label">Cooper Owner</span><span class="sc-owner-val">${cooperOwners[a]||'<em style=\"opacity:.4;\">Not set</em>'}</span></div><div style="margin-top:12px;"><button onclick="openRenameModal(${cur})" class="sc-edit-btn">&#9998; Edit Agent Info</button></div></div>`;
+  let h=`<div class="summary-card agent-info-card"><div class="aic-name">${a}</div><div class="aic-field"><span class="aic-label">Agent Owner</span><span class="aic-val">${agentOwners[a]||'<span class=\"aic-empty\">Not set</span>'}</span></div><div class="aic-field"><span class="aic-label">Cooper Owner</span><span class="aic-val">${cooperOwners[a]||'<span class=\"aic-empty\">Not set</span>'}</span></div><button onclick="openRenameModal(${cur})" class="sc-edit-btn">&#9998; Edit Info</button></div>`;
   h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value" style="font-size:22px;">${maturityLabel(at.pct)}</div><div class="sc-sub">Level ${maturityLevel(at.pct)}</div></div>`;
   const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
   [["c-blue","stock"],["c-purple","spec"],["c-amber","industrial"],["c-green","connected"]].forEach(([cls,sk])=>{
@@ -1125,6 +1128,8 @@ function renderKPI(){
 
   let h=`<thead><tr>
     <th>Agent</th>
+    <th style="border-left:2px solid #334155;background:#1e293b;">Agent Owner</th>
+    <th style="border-left:2px solid #334155;background:#1e293b;">Cooper Owner</th>
     <th style="border-left:4px solid #2563eb;">Stock /${MAX.stock}</th>
     <th style="border-left:4px solid #7c3aed;">Spec /${MAX.spec}</th>
     <th style="border-left:4px solid #d97706;">Industrial /${MAX.industrial}</th>
@@ -1185,6 +1190,8 @@ function renderKPI(){
 
     h+=`<tr>
       <td><span class="agent-dot" style="background:${ac}"></span>${a}${ck}</td>
+      <td style="border-left:2px solid #f1f5f9;"><span style="font-size:12px;color:#555;">${agentOwners[a]||'<span style=\"color:#ccc;font-style:italic;">—</span>'}</span></td>
+      <td style="border-left:2px solid #f1f5f9;"><span style="font-size:12px;color:#555;">${cooperOwners[a]||'<span style=\"color:#ccc;font-style:italic;">—</span>'}</span></td>
       <td><span class="seg-score">${st.total}</span><span class="seg-pct">${Math.round(st.pct*100)}%</span></td>
       <td><span class="seg-score">${sp.total}</span><span class="seg-pct">${Math.round(sp.pct*100)}%</span></td>
       <td><span class="seg-score">${ind.total}</span><span class="seg-pct">${Math.round(ind.pct*100)}%</span></td>
@@ -1217,6 +1224,8 @@ function renderKPI(){
 
   h+=`<tr class="total-row">
     <td>TEAM TOTAL</td>
+    <td style="border-left:2px solid #f1f5f9;"></td>
+    <td style="border-left:2px solid #f1f5f9;"></td>
     <td>${tots.stock}</td><td>${tots.spec}</td><td>${tots.industrial}</td><td>${tots.connected}</td>
     <td>${tots.grand}</td>
     <td><div class="maturity-pill mp-${maturityLevel(avgPct/100)}" style="border-color:${barColor(avgPct/100)};color:${barColor(avgPct/100)};"><span class="mp-num">${maturityLevel(avgPct/100)}</span><span class="mp-lbl">${maturityLabel(avgPct/100)}</span><span class="mp-pct">${avgPct}%</span></div></td>
