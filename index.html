@@ -207,6 +207,12 @@
 .res-hero-title{font-size:20px;font-weight:800;color:#1a1a2e;margin-bottom:8px;}
 .res-hero-sub{font-size:14px;color:#888;max-width:480px;margin:0 auto 24px;}
 .res-upload-zone{border:2px dashed #d0d3da;border-radius:12px;padding:32px;text-align:center;color:#aaa;font-size:13px;font-weight:700;}
+.sc-owner-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:7px;gap:8px;border-top:1px solid rgba(255,255,255,.1);padding-top:7px;}
+.sc-owner-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;flex-shrink:0;}
+.sc-owner-val{font-size:13px;font-weight:700;color:#fff;text-align:right;word-break:break-word;}
+.sc-edit-btn{background:#C8102E;border:none;color:#fff;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:800;cursor:pointer;width:100%;transition:background .15s;}
+.sc-edit-btn:hover{background:#a50d26;}
+.rename-field-label{display:block;font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
 .rename-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;display:flex;align-items:center;justify-content:center;}
 .rename-modal{background:#fff;border-radius:12px;padding:28px 28px 22px;min-width:320px;box-shadow:0 8px 40px rgba(0,0,0,.25);}
 .rename-modal-title{font-size:13px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;}
@@ -683,7 +689,7 @@ const SEGMENTS=[
 
 const MAX={stock:24,spec:32,industrial:28,connected:28};
 const TOTAL_CRITERIA=SEGMENTS.reduce((a,s)=>a+s.criteria.length,0);
-let cur=0,scores={},focus={},snapshots=[],saveTimer=null;
+let cur=0,scores={},focus={},snapshots=[],agentOwners={},cooperOwners={},saveTimer=null;
 
 function initScores(){scores={};AGENTS.forEach(a=>{scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));});}
 initScores();
@@ -850,6 +856,8 @@ async function loadFromServer(){
     }
     if(d.focus) Object.assign(focus,d.focus);
     if(d.snapshots&&Array.isArray(d.snapshots)) snapshots=d.snapshots;
+    if(d.agentOwners&&typeof d.agentOwners==='object') Object.assign(agentOwners,d.agentOwners);
+    if(d.cooperOwners&&typeof d.cooperOwners==='object') Object.assign(cooperOwners,d.cooperOwners);
     // Guard: ensure every agent has a scores entry (handles missing/partial data)
     AGENTS.forEach(a=>{
       if(!scores[a]){ scores[a]={}; SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{ scores[a][s.key+'_'+i]=0; })); }
@@ -868,7 +876,7 @@ async function saveToServer(){
     const r=await fetch('/api/scores',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({scores,focus,snapshots,agents:AGENTS})
+      body:JSON.stringify({scores,focus,snapshots,agents:AGENTS,agentOwners,cooperOwners})
     });
     if(!r.ok) throw new Error('HTTP '+r.status);
     const d=await r.json();
@@ -906,12 +914,18 @@ function updateProgress(){
 function openRenameModal(i){
   const existing=document.getElementById('rename-modal-bg');
   if(existing) existing.remove();
+  const a=AGENTS[i];
   const bg=document.createElement('div');
   bg.id='rename-modal-bg';bg.className='rename-modal-bg';
-  bg.innerHTML=`<div class="rename-modal">
-    <div class="rename-modal-title">Rename Agent</div>
-    <input class="rename-modal-input" id="rename-modal-input" value="${AGENTS[i].replace(/"/g,'&quot;')}" maxlength="40" />
-    <div class="rename-modal-hint">Press Enter or click Save to confirm.</div>
+  bg.innerHTML=`<div class="rename-modal" style="min-width:340px;">
+    <div class="rename-modal-title">Edit Agent Info</div>
+    <label class="rename-field-label">Agent Name</label>
+    <input class="rename-modal-input" id="rni-name" value="${a.replace(/"/g,'&quot;')}" maxlength="40" placeholder="e.g. Gulf 1" />
+    <label class="rename-field-label" style="margin-top:12px;">Agent Owner</label>
+    <input class="rename-modal-input" id="rni-agent-owner" value="${(agentOwners[a]||'').replace(/"/g,'&quot;')}" maxlength="60" placeholder="e.g. John Smith" />
+    <label class="rename-field-label" style="margin-top:12px;">Cooper Owner</label>
+    <input class="rename-modal-input" id="rni-cooper-owner" value="${(cooperOwners[a]||'').replace(/"/g,'&quot;')}" maxlength="60" placeholder="e.g. Jane Doe" />
+    <div class="rename-modal-hint" style="margin-top:10px;">Press Enter or click Save to confirm.</div>
     <div class="rename-modal-btns">
       <button class="rename-modal-cancel" onclick="document.getElementById('rename-modal-bg').remove()">Cancel</button>
       <button class="rename-modal-save" onclick="confirmRename(${i})">Save</button>
@@ -919,22 +933,29 @@ function openRenameModal(i){
   </div>`;
   bg.addEventListener('click',e=>{ if(e.target===bg) bg.remove(); });
   document.body.appendChild(bg);
-  const inp=document.getElementById('rename-modal-input');
+  const inp=document.getElementById('rni-name');
   inp.focus();inp.select();
-  inp.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){e.preventDefault();confirmRename(i);}
-    if(e.key==='Escape') bg.remove();
+  ['rni-name','rni-agent-owner','rni-cooper-owner'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){e.preventDefault();confirmRename(i);}
+      if(e.key==='Escape') bg.remove();
+    });
   });
 }
 function confirmRename(i){
-  const inp=document.getElementById('rename-modal-input');
-  if(!inp) return;
-  const newName=inp.value.trim();
+  const nameInp=document.getElementById('rni-name');
+  const agentOwnerInp=document.getElementById('rni-agent-owner');
+  const cooperOwnerInp=document.getElementById('rni-cooper-owner');
+  if(!nameInp) return;
+  const newName=nameInp.value.trim();
+  const newAgentOwner=(agentOwnerInp?agentOwnerInp.value.trim():'');
+  const newCooperOwner=(cooperOwnerInp?cooperOwnerInp.value.trim():'');
   const bg=document.getElementById('rename-modal-bg');
   if(bg) bg.remove();
-  if(!newName || newName===AGENTS[i]) return;
+  if(!newName) return;
   // Block duplicate names — would corrupt data
-  if(AGENTS.some((a,idx)=>a===newName&&idx!==i)){
+  if(newName!==AGENTS[i]&&AGENTS.some((a,idx)=>a===newName&&idx!==i)){
     toast('⚠ That name is already used by another agent. Choose a different name.');
     return;
   }
@@ -948,16 +969,24 @@ function confirmRename(i){
   snapshots.forEach(snap=>{
     if(snap.data&&snap.data[oldName]){ snap.data[newName]=snap.data[oldName]; delete snap.data[oldName]; }
   });
+  // migrate owner fields if name changed
+  if(newName!==oldName){
+    if(agentOwners[oldName]!==undefined){ agentOwners[newName]=agentOwners[oldName]; delete agentOwners[oldName]; }
+    if(cooperOwners[oldName]!==undefined){ cooperOwners[newName]=cooperOwners[oldName]; delete cooperOwners[oldName]; }
+  }
   // ensure ALL other agents have scores initialised (guard against undefined)
   AGENTS.forEach((a,ai)=>{
     const nm=ai===i?newName:a;
     if(!scores[nm]){ scores[nm]={}; SEGMENTS.forEach(s=>s.criteria.forEach((_,ci)=>{ scores[nm][s.key+'_'+ci]=0; })); }
   });
+  // Save owner fields (use newName as key after rename)
+  if(newAgentOwner!==undefined){ agentOwners[newName]=newAgentOwner; if(newName!==oldName) delete agentOwners[oldName]; }
+  if(newCooperOwner!==undefined){ cooperOwners[newName]=newCooperOwner; if(newName!==oldName) delete cooperOwners[oldName]; }
   AGENTS[i]=newName;
   cur=i;
   renderTabs(); renderSummary(); renderScorecard(); renderKPI();
   scheduleSave();
-  toast('✓ Agent renamed to '+newName);
+  toast('✓ Agent info saved');
 }
 
 function renderTabs(){
@@ -984,7 +1013,7 @@ function renderSummary(){
   const a=AGENTS[cur];
   if(!scores[a]){scores[a]={};SEGMENTS.forEach(s=>s.criteria.forEach((_,i)=>{scores[a][s.key+'_'+i]=0;}));}
   const at=agentTotal(a);
-  let h=`<div class="summary-card c-navy"><div class="sc-label">Agent</div><div class="sc-value" style="font-size:18px;">${a}</div><div style="margin-top:10px;"><button onclick="openRenameModal(${cur})" style="background:#C8102E;border:none;color:#fff;border-radius:6px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;width:100%;">&#9998; Rename Agent</button></div></div>`;
+  let h=`<div class="summary-card c-navy"><div class="sc-label">Agent Name</div><div class="sc-value" style="font-size:18px;">${a}</div><div class="sc-owner-row"><span class="sc-owner-label">Agent Owner</span><span class="sc-owner-val">${agentOwners[a]||'<em style=\"opacity:.4;\">Not set</em>'}</span></div><div class="sc-owner-row"><span class="sc-owner-label">Cooper Owner</span><span class="sc-owner-val">${cooperOwners[a]||'<em style=\"opacity:.4;\">Not set</em>'}</span></div><div style="margin-top:12px;"><button onclick="openRenameModal(${cur})" class="sc-edit-btn">&#9998; Edit Agent Info</button></div></div>`;
   h+=`<div class="summary-card c-red"><div class="sc-label">Overall Score</div><div class="sc-value" style="font-size:22px;">${maturityLabel(at.pct)}</div><div class="sc-sub">Level ${maturityLevel(at.pct)}</div></div>`;
   const SEG_COLORS={stock:"#2563eb",spec:"#7c3aed",industrial:"#d97706",connected:"#059669"};
   [["c-blue","stock"],["c-purple","spec"],["c-amber","industrial"],["c-green","connected"]].forEach(([cls,sk])=>{

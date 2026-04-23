@@ -57,10 +57,12 @@ export default async function handler(req, res) {
     try {
       const data = await blobGet(config);
       return res.status(200).json({
-        scores:    data?.scores    || {},
-        focus:     data?.focus     || {},
-        snapshots: data?.snapshots || [],
-        agents:    data?.agents    || [],
+        scores:      data?.scores      || {},
+        focus:       data?.focus       || {},
+        snapshots:   data?.snapshots   || [],
+        agents:      data?.agents      || [],
+        agentOwners: data?.agentOwners || {},
+        cooperOwners:data?.cooperOwners|| {},
       });
     } catch (e) {
       return res.status(500).json({ scores: {}, focus: {}, snapshots: [], agents: [], error: e.message });
@@ -71,10 +73,12 @@ export default async function handler(req, res) {
     try {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       await blobPut(config, {
-        scores:    body.scores    || {},
-        focus:     body.focus     || {},
-        snapshots: body.snapshots || [],
-        agents:    body.agents    || [],
+        scores:      body.scores      || {},
+        focus:       body.focus       || {},
+        snapshots:   body.snapshots   || [],
+        agents:      body.agents      || [],
+        agentOwners: body.agentOwners || {},
+        cooperOwners:body.cooperOwners|| {},
       });
       return res.status(200).json({ ok: true });
     } catch (e) {
